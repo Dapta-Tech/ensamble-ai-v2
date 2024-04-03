@@ -91,7 +91,7 @@ if __name__ == "__main__":
     if st.session_state.user_question:
         source = get_source(st.session_state.user_question)
         docs = get_documents(source)
-        doc_string = "\n".join([f"- {key} en la página {value}" for key, value in docs.items()])
+        doc_string = "\n".join([f"- {key} En la página {value}" for key, value in docs.items()])
     else:
         source = {'answer': ''}
         doc_string = ""
