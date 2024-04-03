@@ -10,10 +10,11 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 
 suggestion_list = ['¿Cómo pueden los responsables político-administrativos garantizar la alineación y coordinación de esfuerzos para la formulación del Plan Integral de Seguridad y Convivencia Ciudadana (PISCC), considerando los referentes de política del sector defensa, interior y justicia, con el fin de mantener la coherencia y la capacidad de acción integral en el manejo de la seguridad y la convivencia ciudadana en cada territorio?',
-                    '¿Por qué representantes están conformados a nivel territorial los comités municipales, distritales y departamentales de convivencia escolar, que son de carácter permanente?']
+                    '¿Por qué representantes están conformados a nivel territorial los comités municipales, distritales y departamentales de convivencia escolar, que son de carácter permanente?',
+                    'Hasta que fecha tenían tiempo para diseñar el borrador de los Planes Territoriales de Desarrollo (PTD)que serán aprobados por los concejos y las asambleasantes del 31 de mayo?']
 
 def load_base():
-    index_name = "ensamble-v2"
+    index_name = "ensamble-v2-v2"
     pc = Pinecone()
     index = pc.Index(index_name)
     embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
@@ -75,7 +76,7 @@ if __name__ == "__main__":
 
     qa = load_llm()
 
-    st.image('dapta-portada.png')
+    st.image('FIP.png')
     st.title(' 🤖 Ensamble AI 2.0  🤖 ')
     st.divider()
     st.write('Hola, soy el asistente en generación de PISCC. Pregúntame lo que necesites.')
