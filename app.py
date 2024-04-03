@@ -87,21 +87,15 @@ if __name__ == "__main__":
 
     st.divider()
 
-    st.session_state.user_question = st.text_input('Realizar pregunta:')
-    if st.session_state.user_question:
-        source = get_source(st.session_state.user_question)
-        docs = get_documents(source)
-        doc_string = "\n".join([f"- {key} En la página {value}" for key, value in docs.items()])
-    else:
-        source = {'answer': ''}
-        doc_string = ""
+    question = st.text_input('Realizar pregunta:')
+
 
     if st.button('Enviar Pregunta'):
+        source = get_source(question)
+        docs = get_documents(source)
         answer = get_answer(source)
         st.write('Respuesta: ')
         st.write(answer)
         st.divider()
-        st.write("La respuesta generada es con base en la/s siguiente/s página/s:")
-        st.write(doc_string)
 
     
