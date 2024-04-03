@@ -101,7 +101,7 @@ if __name__ == "__main__":
         st.write('Respuesta: ')
         st.write(answer)
         st.divider()
-        st.write("La respuesta generada es con base en los siguientes documentos:")
+        st.write("La respuesta generada es con base en la/s siguiente/s página/s:")
         st.write(doc_string)
 
     
