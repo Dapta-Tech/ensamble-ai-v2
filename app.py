@@ -10,7 +10,7 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 
 suggestion_list = ['¿Cómo pueden los responsables político-administrativos garantizar la alineación y coordinación de esfuerzos para la formulación del Plan Integral de Seguridad y Convivencia Ciudadana (PISCC), considerando los referentes de política del sector defensa, interior y justicia, con el fin de mantener la coherencia y la capacidad de acción integral en el manejo de la seguridad y la convivencia ciudadana en cada territorio?',
-                    'por qué representantes están conformados A nivel territorial los comités municipales, distritales y departamentales de convivencia escolar, que son de carácter permanente?']
+                    '¿Por qué representantes están conformados A nivel territorial los comités municipales, distritales y departamentales de convivencia escolar, que son de carácter permanente?']
 
 def load_base():
     index_name = "ensamble-v2"
