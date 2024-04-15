@@ -42,7 +42,7 @@ def generate_response(query):
 
 def get_source(q):
     #prompt = hub.pull("rlm/rag-prompt")
-    prompt = ChatPromptTemplate.from_template('''Como asistente encargado de proporcionar información sobre la Políticas y planes, tu objetivo es brindar ayuda detallada a los representantes de cada municipio. Tu función principal es proporcionar información precisa y objetiva, sin emitir opiniones personales. En caso de desconocer alguna información específica, responderás con 'No estás seguro al respecto, consulta a un experto'.
+    prompt = ChatPromptTemplate.from_template('''Como asistente encargado de proporcionar información sobre la Políticas y planes, tu objetivo es brindar ayuda detallada a los representantes de cada municipio. Tu función principal es proporcionar información precisa y objetiva, sin emitir opiniones personales.
                                                 Pregunta: {question}
                                                 Contexto: {context}
                                                 Respuesta:''')
