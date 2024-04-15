@@ -9,12 +9,12 @@ from langchain_core.runnables import RunnableParallel
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 
-suggestion_list = ['¿Cómo pueden los responsables político-administrativos garantizar la alineación y coordinación de esfuerzos para la formulación del Plan Integral de Seguridad y Convivencia Ciudadana (PISCC), considerando los referentes de política del sector defensa, interior y justicia, con el fin de mantener la coherencia y la capacidad de acción integral en el manejo de la seguridad y la convivencia ciudadana en cada territorio?',
-                    '¿Por qué representantes están conformados a nivel territorial los comités municipales, distritales y departamentales de convivencia escolar, que son de carácter permanente?',
-                    'Hasta que fecha tenían tiempo para diseñar el borrador de los Planes Territoriales de Desarrollo (PTD)que serán aprobados por los concejos y las asambleasantes del 31 de mayo?']
+suggestion_list = ['¿Qué porcentaje de vehículos nuevos comercializados en Colombia tenían incorporados algunos sistemas de seguridad en 2017?',
+                    'De acuerdo con cifras del Departamento Nacional de Estadística ¿cuántas personas comprenden la población joven?',
+                    '¿Qué es Uua Política Pública de Convivencia y Seguridad Ciudadana']
 
 def load_base():
-    index_name = "ensamble-v2-v2"
+    index_name = "fip-124-v1"
     pc = Pinecone()
     index = pc.Index(index_name)
     embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
@@ -42,7 +42,7 @@ def generate_response(query):
 
 def get_source(q):
     #prompt = hub.pull("rlm/rag-prompt")
-    prompt = ChatPromptTemplate.from_template('''Como asistente encargado de proporcionar información sobre la 'GUÍA METODOLÓGICA PARA LA FORMULACIÓN, IMPLEMENTACIÓN, SEGUIMIENTO Y EVALUACIÓN DE LOS PLANES INTEGRALES DE SEGURIDAD Y CONVIVENCIA CIUDADANA', tu objetivo es brindar ayuda detallada a los representantes de cada municipio. Tu función principal es proporcionar información precisa y objetiva, sin emitir opiniones personales. En caso de desconocer alguna información específica, responderás con 'No estás seguro al respecto, consulta a un experto'.
+    prompt = ChatPromptTemplate.from_template('''Como asistente encargado de proporcionar información sobre la Políticas y planes, tu objetivo es brindar ayuda detallada a los representantes de cada municipio. Tu función principal es proporcionar información precisa y objetiva, sin emitir opiniones personales. En caso de desconocer alguna información específica, responderás con 'No estás seguro al respecto, consulta a un experto'.
                                                 Pregunta: {question}
                                                 Contexto: {context}
                                                 Respuesta:''')
