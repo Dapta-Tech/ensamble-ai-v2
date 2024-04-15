@@ -11,7 +11,7 @@ from langchain_core.output_parsers import StrOutputParser
 
 suggestion_list = ['¿Qué porcentaje de vehículos nuevos comercializados en Colombia tenían incorporados algunos sistemas de seguridad en 2017?',
                     'De acuerdo con cifras del Departamento Nacional de Estadística ¿cuántas personas comprenden la población joven?',
-                    '¿Qué es Uua Política Pública de Convivencia y Seguridad Ciudadana?']
+                    '¿Qué es Una Política Pública de Convivencia y Seguridad Ciudadana?']
 
 def load_base():
     index_name = "fip-124-v1"
