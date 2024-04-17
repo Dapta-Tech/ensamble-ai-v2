@@ -96,7 +96,7 @@ if __name__ == "__main__":
 
     if st.button('Enviar Pregunta'):
         source = get_source(question)
-        docs = get_documents(source)
+        #docs = get_documents(source)
         answer = get_answer(source)
         st.write('Respuesta: ')
         st.write(answer)
