@@ -9,12 +9,15 @@ from langchain_core.runnables import RunnableParallel
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 
-suggestion_list = ['¿Qué porcentaje de vehículos nuevos comercializados en Colombia tenían incorporados algunos sistemas de seguridad en 2017?',
-                    'De acuerdo con cifras del Departamento Nacional de Estadística ¿cuántas personas comprenden la población joven?',
-                    '¿Qué es Una Política Pública de Convivencia y Seguridad Ciudadana?']
+suggestion_list = ['¿Cuándo se creó La Constitución Política de Colombia?',
+                    'Disposiciones generales de LEY 1620 DE 2013',
+                    '¿Qué es el poder de policía?',
+                    '¿Un policía puede expedir normas?',
+                    '¿Cuánto tiempo tiene el Ministerio de Educación Nacional para iniciar el proceso de reglamentación?',
+                    '¿Qué objetivo tiene el proceso de reglamentación que debe iniciar el Ministerio de Educación Nacional?']
 
 def load_base():
-    index_name = "fip-124-v1"
+    index_name = "leyes-v1"
     pc = Pinecone()
     index = pc.Index(index_name)
     embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
@@ -79,7 +82,7 @@ if __name__ == "__main__":
     st.image('FIP.png')
     st.title(' 🤖 Ensamble AI 2.0  🤖 ')
     st.divider()
-    st.write('Hola, soy el asistente en generación de PISCC. Pregúntame lo que necesites.')
+    st.write('Hola, soy el asistente en construcción ⌛ para la generación de PISCC. Sigo entrenándome con los documentos, de momento sólo conozco las leyes de Colombia como por ejemplo "ley-2277-de-2022" o "La Constitución de Colombia" Pregúntame lo que necesites sobre eso.')
     st.divider()
     st.write("Aquí te dejo algunas preguntas que puedes realizarme como sugerencia:")
 
