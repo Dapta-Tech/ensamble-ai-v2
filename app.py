@@ -135,7 +135,7 @@ if __name__ == "__main__":
     qa = load_llm()
 
     st.image('dapta-portada.png')
-    st.title(' 🤖 Oikonomos Bot v1  🤖 ')
+    st.title(' 🤖 Ensamble AI 2.0   🤖 ')
     st.divider()
     st.write('Hola, soy el asistente en construcción ⌛ para la generación de PISCC. Sigo entrenándome con los documentos estructurados como ser excels y bases de datos, pero también puedo responder preguntas generales sobre los documentos no estructurados que son todos los PDFs.')
     st.divider()
