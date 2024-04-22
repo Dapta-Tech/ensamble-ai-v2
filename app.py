@@ -72,7 +72,7 @@ def get_documents(source):
     source = source['context']
     docs_list = []
     for i in source:
-        doc = i.metadata['source']
+        doc = i.metadata['source'][34:]
         docs_list.append(doc)
     return  docs_list
 
