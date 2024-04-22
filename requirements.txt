@@ -5,3 +5,6 @@ langchain-openai
 langchain 
 langchain-community
 langchainhub
+google-cloud-storage
+gcsfs
+st-files-connection
