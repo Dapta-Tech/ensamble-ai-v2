@@ -10,19 +10,18 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 
 suggestion_list = ['¿Cuándo se creó La Constitución Política de Colombia?',
-                    'Disposiciones generales de LEY 1620 DE 2013',
-                    '¿Qué es el poder de policía?',
+                    '¿Cuál es la tasa de analfabetismo en el municipio de Paujil?',
+                    '¿Dónde que la provincia de Arroyohondo?',
                     '¿Un policía puede expedir normas?',
-                    '¿Cuánto tiempo tiene el Ministerio de Educación Nacional para iniciar el proceso de reglamentación?',
                     '¿Qué objetivo tiene el proceso de reglamentación que debe iniciar el Ministerio de Educación Nacional?']
 
 def load_base():
-    index_name = "leyes-v1"
+    index_name = "all-data-v1"
     pc = Pinecone()
     index = pc.Index(index_name)
     embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
     text_field = "text"
-    vectorstore = PineconeVectorStore(index, embeddings, text_field)
+    vectorstore = PineconeVectorStore(index, embeddings, text_field, namespace = "unstructured-data")
     retriever = vectorstore.as_retriever()
     return retriever
 
@@ -45,7 +44,7 @@ def generate_response(query):
 
 def get_source(q):
     #prompt = hub.pull("rlm/rag-prompt")
-    prompt = ChatPromptTemplate.from_template('''Como asistente encargado de proporcionar información sobre la Políticas y planes, tu objetivo es brindar ayuda detallada a los representantes de cada municipio. Tu función principal es proporcionar información precisa y objetiva, sin emitir opiniones personales.
+    prompt = ChatPromptTemplate.from_template('''Eres un asistente que provee información precisa sobre políticas, leyes, Caracterización Municipal, números sobre delitos y bases sobre estrategias, tu tarea es proveer información precisa y sin emitir opinión para que altos mandos de cada municipio o ciudad puedan tomar decisiones basados en tu informaicón para la construcción del PISCC, recuerda que tu respuesta debe ser directa y al punto.
                                                 Pregunta: {question}
                                                 Contexto: {context}
                                                 Respuesta:''')
@@ -82,7 +81,7 @@ if __name__ == "__main__":
     st.image('FIP.png')
     st.title(' 🤖 Ensamble AI 2.0  🤖 ')
     st.divider()
-    st.write('Hola, soy el asistente en construcción ⌛ para la generación de PISCC. Sigo entrenándome con los documentos, de momento sólo conozco las leyes de Colombia como por ejemplo "ley-2277-de-2022" o "La Constitución de Colombia" Pregúntame lo que necesites sobre eso.')
+    st.write('Hola, soy el asistente en construcción ⌛ para la generación de PISCC. Sigo entrenándome con los documentos estructurados como ser excels y bases de datos, pero también puedo responder preguntas generales sobre los documentos no estructurados que son todos los PDFs.')
     st.divider()
     st.write("Aquí te dejo algunas preguntas que puedes realizarme como sugerencia:")
 
@@ -96,7 +95,6 @@ if __name__ == "__main__":
 
     if st.button('Enviar Pregunta'):
         source = get_source(question)
-        #docs = get_documents(source)
         answer = get_answer(source)
         st.write('Respuesta: ')
         st.write(answer)
