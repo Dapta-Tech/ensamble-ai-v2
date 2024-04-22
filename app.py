@@ -146,8 +146,8 @@ if __name__ == "__main__":
     st.session_state.user_question = st.text_input('Realizar pregunta:', value=st.session_state.user_question)
     if st.session_state.user_question:
         source = get_source(st.session_state.user_question)
-        docs = get_documents(source)
-        doc_string = "\n".join([f"- {key} en la página {value}" for key, value in docs.items()])
+        doc_string = get_documents(source)
+        #doc_string = "\n".join([f"- {key} en la página {value}" for key, value in docs.items()])
     else:
         source = {'answer': ''}
         doc_string = ""
