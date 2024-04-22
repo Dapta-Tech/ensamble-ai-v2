@@ -70,13 +70,9 @@ def get_source(q):
 
 def get_documents(source):
     source = source['context']
-    print(source)
-    docs_dict = {}
-    for i in source:
-        doc = i.metadata['source'][40:]
-        page = i.metadata['page']
-        docs_dict[doc] = page
-    return  docs_dict
+    docs_list = []
+    docs_list.append(source)
+    return  docs_list
 
 def download_csv_from_bucket(csv_file, bucket_name):
     """Downloads a CSV file from a Google Cloud Storage bucket and loads it into a DataFrame."""
