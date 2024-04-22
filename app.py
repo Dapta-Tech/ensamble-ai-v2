@@ -164,8 +164,8 @@ if __name__ == "__main__":
     if st.session_state.useful == 'No':
         st.write('Por favor, ingresa el motivo por el cual la respuesta no fue útil:')
         st.session_state.improvement_suggestions = st.text_input('Ingresar sugerencias de mejora:', value=st.session_state.improvement_suggestions, placeholder='Ejemplo: "Me gustaría que la respuesta fuera más detallada"')
-        st.session_state.missing_details = st.text_input('Ingresar detalles faltantes:', value=st.session_state.missing_details, placeholder='Ejemplo: "Falta información sobre del banco Itaú"')
-        st.session_state.source_details = st.text_input('Ingresar detalles de la fuente:', value=st.session_state.source_details, placeholder='Ejemplo: "Al pedir la fuente me da una errónea "')
+        st.session_state.missing_details = st.text_input('Ingresar detalles faltantes:', value=st.session_state.missing_details, placeholder='Ejemplo: "Falta información sobre hurtos"')
+        st.session_state.source_details = st.text_input('Ingresar detalles de la fuente:', value=st.session_state.source_details, placeholder='Ejemplo: "La fuente de información debería ser: FUENTE')
 
     if st.button('Enviar feedback'):
         # Resetear las entradas después de enviar el feedback
