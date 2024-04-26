@@ -17,28 +17,28 @@ from langchain_core.output_parsers import StrOutputParser
 
 suggestion_list = ['¿Cuándo se creó La Constitución Política de Colombia?',
                     '¿Cuál es la tasa de analfabetismo en el municipio de Paujil?',
-                    '¿Dónde que la provincia de Arroyohondo?',
+                    '¿Dónde queda la provincia de Arroyohondo?',
                     '¿Un policía puede expedir normas?',
                     '¿Qué objetivo tiene el proceso de reglamentación que debe iniciar el Ministerio de Educación Nacional?']
 
 csv_file = 'fip_feedback.csv' 
 bucket_name = 'taxo-pdfs'
 
-def load_base():
+def load_base(namespace):
     index_name = "all-data-v1"
     pc = Pinecone()
     index = pc.Index(index_name)
     embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
     text_field = "text"
-    vectorstore = PineconeVectorStore(index, embeddings, text_field, namespace = "unstructured-data")
+    vectorstore = PineconeVectorStore(index, embeddings, text_field, namespace = namespace)
     retriever = vectorstore.as_retriever()
     return retriever
 
-def load_llm():
+def load_llm(namespace):
     llm = ChatOpenAI(
         model_name='gpt-3.5-turbo',
         temperature=0)
-    retriever = load_base()
+    retriever = load_base(namespace)
     qa = RetrievalQA.from_chain_type(
     llm=llm,
     chain_type="stuff",
@@ -47,9 +47,6 @@ def load_llm():
 
 def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
-
-def generate_response(query):
-    return qa.run(query)
 
 def get_source(q):
     prompt = ChatPromptTemplate.from_template('''Eres un asistente que provee información precisa sobre políticas, leyes, Caracterización Municipal, números sobre delitos y bases sobre estrategias, tu tarea es proveer información precisa y sin emitir opinión para que altos mandos de cada municipio o ciudad puedan tomar decisiones basados en tu informaicón para la construcción del PISCC, recuerda que tu respuesta debe ser directa y al punto.
@@ -126,17 +123,16 @@ if 'useful' not in st.session_state:
 
 if __name__ == "__main__":
     df = download_csv_from_bucket(csv_file, bucket_name)
-    qa = load_llm()
+    qa = load_llm('structured-data3')
+    qa_presupuesto = load_base('presupuesto-general')
 
     st.session_state.user_question = None
     st.session_state.feedback = None
 
-    qa = load_llm()
-
     st.image('dapta-portada.png')
     st.title(' 🤖 Ensamble AI 2.0   🤖 ')
     st.divider()
-    st.write('Hola, soy el asistente en construcción ⌛ para la generación de PISCC. Sigo entrenándome con los documentos estructurados como ser excels y bases de datos, pero también puedo responder preguntas generales sobre los documentos no estructurados que son todos los PDFs.')
+    st.write('Hola, soy el asistente en consulta :reloj_de_arena: para la generación de PISCC. uedo responder preguntas generales sobre los documentos PDFs. Sigo entrenándome con los documentos estructurados ( Excels y bases de datos).')
     st.divider()
     st.write("Aquí te dejo algunas preguntas que puedes realizarme como sugerencia:")
 
