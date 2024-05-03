@@ -19,11 +19,10 @@ def ask_question(chain, question):
 
 if __name__ == "__main__":
     URI = "sqlite:///Chinook.db"
-    
+
     db = connect_to_database(URI)
 
     print(get_table_names(db))
-    print(run_sql_query(db, "SELECT * FROM Artist LIMIT 10;"))
 
     llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
     chain = create_chat_chain(llm, db)
