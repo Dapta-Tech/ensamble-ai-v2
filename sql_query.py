@@ -22,9 +22,8 @@ if __name__ == "__main__":
 
     db = connect_to_database(URI)
 
-    print(get_table_names(db))
-
     llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
     chain = create_chat_chain(llm, db)
     response = ask_question(chain, "How many employees are there")
     print(response)
+    print("respuesta:", db.run(response))
