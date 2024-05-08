@@ -18,12 +18,12 @@ def ask_question(chain, question):
     return chain.invoke({"question": question})
 
 if __name__ == "__main__":
-    URI = "sqlite:///Chinook.db"
+    URI = "postgresql://clients:bZqbYHeEA2x$Qa6KxnYVkX@clients.cluster-c9w8clqzjjhu.us-east-2.rds.amazonaws.com:5432/fip_db_ai_model"
 
     db = connect_to_database(URI)
 
-    llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
+    llm = ChatOpenAI(model="gpt-4-turbo", temperature=0)
     chain = create_chat_chain(llm, db)
-    response = ask_question(chain, "How many employees are there")
+    response = ask_question(chain, "Cuál es el objetivo macro de la estrategia llamada Generación de conocimiento sobre el fenómeno del abigeato ")
     print(response)
-    print("respuesta:", db.run(response))
+    #print("respuesta:", db.run(response))

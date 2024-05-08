@@ -1,5 +1,3 @@
-import streamlit as st
-import time
 import re
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
@@ -8,12 +6,6 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_pinecone import PineconeVectorStore
 from pinecone import Pinecone
 from langchain.retrievers import (MergerRetriever,)
-
-# Streamed response emulator
-def response_generator(response):
-    for word in response.split():
-        yield word + " "
-        time.sleep(0.02)
 
 #Load bases from a list of namespaces
 def load_bases(index_name= "",bases_list = []):
@@ -84,10 +76,10 @@ def get_context_retriever_chain(big_vector):
 def get_conversational_rag_chain(retriever_chain): 
     llm = ChatOpenAI()
     prompt = ChatPromptTemplate.from_messages([
-        ("system", "No eres un asistente, Tu tarea es crear 3 tipos de gráficos con Javascript Chart.js\
-        o una tabla en HTML\
+        ("system", """No eres un asistente, Tu tarea es crear 3 tipos de gráficos con Javascript Chart.js
+        o una tabla en HTML
 	    provisto por el usuario en el siguiente contexto: {context},\
-        Tu tarea es devolver el texto en formato HTML de tablas o Javascript con los gráficos solicitados."),
+        Tu tarea es devolver el texto en formato HTML de tablas o Javascript con los gráficos solicitados."""),
         ("user", "{input}"),
     ])
     
@@ -95,58 +87,23 @@ def get_conversational_rag_chain(retriever_chain):
     return create_retrieval_chain(retriever_chain, stuff_documents_chain)
 
 #Gets the response from the conversational RAG chain.
-def get_response(user_input):
-    retriever_chain = get_context_retriever_chain(st.session_state.vector_store)
+def get_response(query):
+    vector_store = load_bases(index_name = "all-data-v1",
+                                                    bases_list = 
+                                                    ["1-Politica-Publica",
+                                                    "2-caracterizacion-municipal",
+                                                    "3-informacion-delitos-indicadores-mes-a-mes",
+                                                    "3-informacion-delitos-indicadores-tpcmh",
+                                                    "4-Base-estrategias"])
+    retriever_chain = get_context_retriever_chain(vector_store)
     conversation_rag_chain = get_conversational_rag_chain(retriever_chain)
     
     response = conversation_rag_chain.invoke({
-        "chat_history": st.session_state.chat_history,
-        "input": user_input
+        "chat_history": [],
+        "input": query
     })
-    
-    return response['answer']
 
-#Completes the URL with 'https://' and 'www.' if not present.
-def complete_url(url):
-    if not url.startswith("http://") and not url.startswith("https://"):
-        url = "https://www." + url
-    elif url.startswith("www."):
-        url = "https://" + url
-    return url
-
-#Checks if the URL is valid.
-def is_valid_url(url):
-    pattern = r'^(https?:\/\/)(www\.)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$'
-    return re.match(pattern, url) is not None
-
-if __name__ == "__main__":
-    st.set_page_config(page_title="Ensamble V2", page_icon="🤖")
-    st.title("Crea un gráfico para tu PISCC")
-
-    if "vector_store" not in st.session_state:
-        st.session_state.vector_store = load_bases(index_name = "all-data-v1",
-                                                    bases_list = 
-                                                    ["unstructured-data",
-                                                    "1-Politica-Publica",
-                                                    "2-caracterizacion-municipal",
-                                                    "4-Base-estrategias"])
-
-    if "chat_history" not in st.session_state:
-        st.session_state.chat_history = []
-
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
-
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
-
-    if prompt := st.chat_input("Habla con el bot..."):
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        with st.chat_message("user"):
-            st.write_stream(response_generator(prompt))
-
-        response = get_response(prompt)
-        with st.chat_message("assistant"):
-            st.write_stream(response_generator(response))
-        st.session_state.messages.append({"role": "assistant", "content": response})
+    print(response['answer'])
+    script_content_with_tags = re.findall(r"(<script>.*?</script>)", response['answer'], re.DOTALL)
+    table_content_with_tags = re.findall(r"(<table>.*?</table>)", response['answer'], re.DOTALL)
+    return script_content_with_tags > 0 if len(script_content_with_tags) > 0 else table_content_with_tags
