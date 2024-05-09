@@ -99,6 +99,51 @@ def get_delitos_mes_a_mes(municipio):
     cadena_resultado = ""
     for index, row in df_final.iterrows():
         cadena_resultado += f"El total del delito: {row['delitos']}, en el año: {row['Año']}, fue de: {row['total']}\n"
+    print ('------------------cadena_resultado---------------------')
+    print (cadena_resultado)
+    return cadena_resultado
+
+def get_delitos_tpcmh(municipio):
+    file_path = "data/indicadores tpcmh/"
+    dfs = []
+
+    columnas_a_usar = ['Municipio', '2019', '2020', '2021', '2022', '2023']
+
+    for archivo in os.listdir(file_path):
+        if archivo.endswith('.csv'):
+            ruta_completa = os.path.join(file_path, archivo)
+            
+            try:
+                # Leer el archivo, suponiendo que todas las columnas son relevantes
+                df = pd.read_csv(ruta_completa, low_memory=False)
+                
+                # Filtrar por municipio y añadir columna de tipo de delito
+                df_municipio = df[df['Municipio'] == municipio].copy()
+                tipo_delito = archivo.replace('.csv', '')
+                df_municipio.loc[:, 'Tipo delito'] = tipo_delito
+                
+                # Melt para transformar años en filas
+                df_melted = df_municipio.melt(id_vars=['Municipio', 'Tipo delito'], var_name='Año', value_name='Incidentes')
+                dfs.append(df_melted)
+            
+            except Exception as e:
+                print(f"Error al procesar {archivo}: {e}")
+
+    # Concatenar todos los dataframes
+    df_completo = pd.concat(dfs, ignore_index=True)
+    
+    # Agrupar por año y tipo de delito y calcular el total de incidentes
+    df_agrupado = df_completo.groupby(['Año', 'Tipo delito']).sum().reset_index()
+    df_final = df_agrupado[['Año', 'Tipo delito', 'Incidentes']]
+    
+    # Ordenar por tipo de delito y luego por año
+    df_final = df_final.sort_values(by=['Tipo delito', 'Año'])
+    
+    # Construir la cadena de resultado
+    cadena_resultado = ""
+    for index, row in df_final.iterrows():
+        cadena_resultado += f"El total del delitos por TPCMH: {row['Tipo delito']}, en el año: {row['Año']}, fue de: {row['Incidentes']}\n"
+    print ('------------------cadena_resultado TPCMH---------------------')
     print (cadena_resultado)
     return cadena_resultado
 
@@ -110,6 +155,7 @@ if __name__ == "__main__":
     municipio = "El Banco (Mag)"
 
     delitos_mes_a_mes = get_delitos_mes_a_mes(municipio)
+    delitos_tpcmh = get_delitos_tpcmh(municipio)
 
     vector_bases = load_bases(index_name="all-data-v1", 
                             bases_list=["1-Politica-Publica",
