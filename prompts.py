@@ -97,7 +97,6 @@ descritos con los siguientes puntos:
 infraestructura, equipos disponibles para las entidades que hacen parte de esta categoría. para el municipio de {municipio}
 
 Sobre el formato:
-- Incluye el uso de negritas al lector a identificar los puntos clave.
 - No incluyas un párrafo de resumen de la sección.
 
 IMPORTANTE: 
@@ -159,8 +158,6 @@ determinados grupos étnicos, así como a personas con orientaciones sexuales e 
 - Detalle estadístico minucioso sobre los delitos en el municipio de {municipio} en los últimos 
 5 años detallados en la sección: {delitos_mes_a_mes}.
 
-Sobre el formato:
-- Incluye un poco de negritas, cursivas y listas para ayudar al lector a identificar los puntos clave.
 
 IMPORTANTE: 
 - El documento generado debe tener un mínimo de 20 párrafos largos.
@@ -221,8 +218,9 @@ Sobre el formato:
 - Incluye la justificación de responsabilidad del alcalde en la implementación de las estrategias de intervención.
 
 IMPORTANTE: 
-- El documento generado debe tener un mínimo de 20 párrafos largos.
+- El documento generado debe tener un mínimo de 10 párrafos extensos.
 - No incluyas un párrafo de resumen de la sección.
+- No aumentes otras secciones
 
 Redacta parafos extensos de las secciones en formato HTML:
 """
@@ -249,10 +247,11 @@ Sobre el formato:
 de las estrategias de intervención de manera detallada.
 
 IMPORTANTE: 
-- El documento generado debe tener un mínimo de 20 párrafos largos.
+- El documento generado debe tener un mínimo de 10 párrafos extensos.
 - No incluyas un párrafo de resumen de la sección.
+- No aumentes otras secciones
 
-Redacta parafos extensos de las secciones en formato HTML:
+Redacta parafos extensos para cada sección del punto 6 en formato HTML:
 """
 
 prompt_7_Implementacion = """

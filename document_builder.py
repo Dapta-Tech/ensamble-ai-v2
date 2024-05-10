@@ -71,34 +71,28 @@ def get_response(question,delitos_mes_a_mes,tpcmh,municipio,seccion_context, cha
 
 def get_delitos_mes_a_mes(municipio):
     file_path = "data/indicadores mes a mes/"
-    dfs = []
 
-    for archivo in os.listdir(file_path):
-        if archivo.endswith('.csv'):
-            ruta_completa = os.path.join(file_path, archivo)
-            df = pd.read_csv(ruta_completa)
-            df.rename(columns={'Estadísticas (1)': 'delitos'}, inplace=True)
-            
-            # Filtrar por municipio
-            df_municipio = df[df['Municipio'] == municipio]
-            
-            dfs.append(df_municipio)
-            
-    df_completo = pd.concat(dfs)
+    archivos_csv = [archivo for archivo in os.listdir(file_path) if archivo.endswith('.csv')]
 
-    # Agrupar por año y delitos y calcular el total de delitos
-    df_agrupado = df_completo.groupby(['Año', 'delitos']).size().reset_index(name='total')
-    df_final = df_agrupado[['Año', 'delitos', 'total']]
+    datos = pd.concat([pd.read_csv(os.path.join(file_path, archivo), sep=',') for archivo in archivos_csv])
 
-    # Ordenar por delito y luego por año
-    df_final = df_final.sort_values(by=['delitos', 'Año'])
+    datos = datos[datos['Municipio'] == municipio]
 
-    # Cadena con la estructura``
-    cadena_resultado = ""
-    for index, row in df_final.iterrows():
-        cadena_resultado += f"El total del delito: {row['delitos']}, en el año: {row['Año']}, fue de: {row['total']}\n"
-    print (cadena_resultado)
-    return cadena_resultado
+    datos.rename(columns={'Estadísticas (1)': 'delito'}, inplace=True)
+
+    # Seleccionar las columnas requeridas
+    columnas_requeridas = ["Tema", "delito", "Municipio", "Σ Cantidad", 
+                        "Mayor de Edad", "Menor de edad", "Edad n.d.", "Masculino", 
+                        "Femenino", "Año"]
+    datos_seleccionados = datos[columnas_requeridas]
+
+    suma_cantidad_por_año = datos_seleccionados.groupby(["Año", "delito", "Municipio"])["Σ Cantidad"].sum().reset_index()
+    
+    for index, row in suma_cantidad_por_año.iterrows():
+        cadena = f"El   delito {row['delito']}, del municipio de {row['Municipio']} es igual a {row['Σ Cantidad']} en el año {row['Año']}"
+        print(cadena)
+    
+    return cadena
 
 def get_prompt_result(vectors, prompt, question, llm, delitos_mes_a_mes, tpcmh, municipio, seccion_context):
     
@@ -119,7 +113,8 @@ def get_prompt_result(vectors, prompt, question, llm, delitos_mes_a_mes, tpcmh, 
 if __name__ == "__main__":
     llm = get_llm()
 
-    municipio = "Facatativá (Cun)"
+    #municipio = "Ábrego (Nsa)"
+    municipio = "Bogotá, D.C. Cap."
     #Pasar en minísculas, volver minúsculas
 
     delitos_mes_a_mes = get_delitos_mes_a_mes(municipio)
