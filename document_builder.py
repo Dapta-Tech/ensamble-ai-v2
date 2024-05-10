@@ -184,6 +184,7 @@ if __name__ == "__main__":
                                         tpcmh = "No hay registros",
                                         municipio = municipio,
                                         seccion_context = "")
+    print("Secicón 1")
     print(prompt_result_1)
 
     question_2 = """Generar la sección 2.Marco Normativo, donde se Menciona los 
@@ -204,6 +205,7 @@ if __name__ == "__main__":
                                         tpcmh = "No hay registros",
                                         municipio = municipio,
                                         seccion_context = prompt_result_1)
+    print("Secicón 2")
     print(prompt_result_2)
 
     question_3 = """Generar la sección 3. Diagnóstico de la Situación de Seguridad y Convivencia Ciudadana 
@@ -218,6 +220,7 @@ if __name__ == "__main__":
                                         tpcmh = "No hay registros",
                                         municipio = municipio,
                                         seccion_context = prompt_result_1)
+    print("Secicón 3")
     print(prompt_result_3)
 
     question_3_1 = """Generar la sección 3.1 Diagnóstico de la Situación de Seguridad y 
@@ -232,6 +235,7 @@ if __name__ == "__main__":
                                         tpcmh = "No hay registros",
                                         municipio = municipio,
                                         seccion_context = prompt_result_3)
+    print("Secicón 31")
     print(prompt_result_3_1)
 
     question_3_2 = """Generar la sección 3.2 Diagnóstico de conflictividades. 
@@ -248,6 +252,7 @@ if __name__ == "__main__":
                                             tpcmh = "No hay registros",
                                             municipio = municipio,
                                             seccion_context = prompt_result_3_1)
+    print("Secicón 3 2")
     print(prompt_result_3_2)
 
     question_3_3 = """Generar la sección 3.3 Diagnóstico de comportamientos contrarios a la convivencia. 
@@ -263,6 +268,7 @@ if __name__ == "__main__":
                                             tpcmh = "No hay registros",
                                             municipio = municipio,
                                             seccion_context = prompt_result_3_2)
+    print("Secicón 3 3")
     print(prompt_result_3_3)
 
     question_3_4 = """Generar la sección 3.4 Diagnóstico de delitos. 
@@ -280,6 +286,7 @@ if __name__ == "__main__":
                                             tpcmh = "No hay registros",
                                             municipio = municipio,
                                             seccion_context = prompt_result_3_3)
+    print("Secicón 3 4 ")
     print(prompt_result_3_4)
 
 
@@ -298,6 +305,7 @@ if __name__ == "__main__":
                                             tpcmh = "No hay registros",
                                             municipio = municipio,
                                             seccion_context = prompt_result_3_4)
+    print("Secicón 4")
     print(prompt_result_4)
 
     question_5 = """Generar la sección 5. Formulación Estratégica del PISCC 2024-2027. 
@@ -308,27 +316,29 @@ if __name__ == "__main__":
     prompt_result_5 = get_prompt_result(vectors = ["1-Politica-Publica",
                                             "1-Politica-Publica_Leyes_Politicas-Planes",
                                             "4-Base-estrategias"],
-                                            prompt = prompts_dict["4 Focalización"],
+                                            prompt = prompts_dict["5 Formulación"],
                                             question = question_5,
                                             llm = llm,
                                             delitos_mes_a_mes = delitos_mes_a_mes,
                                             tpcmh = "No hay registros",
                                             municipio = municipio,
-                                            seccion_context = prompt_result_4)
+                                            seccion_context = "prompt_result_5")
+    print("Sección 5")
     print(prompt_result_5)
 
     question_6 = """Generar la sección 6. Planeación Financiera y Operativa. del PISCC 2024-2027. 
-    para el municipio de {municipio}, Usarás el presupuesto asignado para la gestión."""	
+    para el municipio de {municipio}, para indicar al usuario cómo se de be asignar el presupuesto para la planificación."""	
 
     prompt_result_6 = get_prompt_result(vectors = ["1-Politica-Publica",
                                             "1-Politica-Publica_Leyes_Politicas-Planes",
                                             "4-Base-estrategias",
                                             "2-Caracterizaion_Social_Presupuesto-General"],
-                                            prompt = prompts_dict["4 Focalización"],
+                                            prompt = prompts_dict["6 Financiamiento"],
                                             question = question_6,
                                             llm = llm,
                                             delitos_mes_a_mes = delitos_mes_a_mes,
                                             tpcmh = "No hay registros",
                                             municipio = municipio,
-                                            seccion_context = (prompt_result_1 + prompt_result_4 + prompt_result_5 ))
+                                            seccion_context = (prompt_result_5 ))
+    print("Sección 6")
     print(prompt_result_6)

@@ -21,6 +21,7 @@ Sobre el formato:
 IMPORTANTE: 
 - El documento generado debe tener un mínimo de 10 párrafos largos.
 - No incluyas un párrafo de resumen de la sección.
+- No incluyas el subtítulo de la sección, solo el contenido.
 
 Redacta solo la Sección 1. Introducción en formato HTML:
 """
@@ -44,6 +45,7 @@ población en la entidad territorial segun  la información de:
 
 Sobre el formato:
 - Incluye el uso de negritas, cursivas para ayudar al lector a identificar los puntos clave.
+- No incluyas el subtítulo de la sección, solo el contenido.
 
 IMPORTANTE: 
 - El documento generado debe tener un mínimo de 10 párrafos largos.
@@ -70,6 +72,7 @@ Sobre el formato:
 IMPORTANTE: 
 - El documento generado debe tener un mínimo de 5 párrafos largos.
 - No incluyas un párrafo de resumen de la sección.
+- No incluyas el subtítulo de la sección, solo el contenido.
 
 Redacta solo la Sección 3 en formato HTML:
 """
@@ -101,6 +104,7 @@ Sobre el formato:
 
 IMPORTANTE: 
 - El documento generado debe tener un mínimo de 10 párrafos largos.
+- No incluyas el subtítulo de la sección, solo el contenido.
 
 Redacta solo la Sección 3.1 Análisis de Estadísticas de Seguridad en formato HTML:
 """
@@ -122,6 +126,8 @@ orden local, entre otros).
 Sobre el formato:
 - Incluye el uso de negritas y cursivas para ayudar al lector a identificar los puntos clave.
 - No incluyas un párrafo de resumen de la sección.
+- No incluyas el subtítulo de la sección, solo el contenido.
+- Incluye un análsis detendencias estádisticas entre los delitos de los últimos 5 años.
 
 IMPORTANTE: El documento generado debe tener un mínimo de 10 párrafos largos.
 Redacta 3.2 Diagnóstico de conflictividades. en formato HTML:
@@ -142,7 +148,8 @@ Sobre el formato:
 
 IMPORTANTE: 
 - No incluyas un párrafo de resumen de la sección.
-- Incluye 3 párrafos para cada sección.
+- Redacta 3 párrafos para cada sección.
+- No incluyas el subtítulo de la sección, solo el contenido.
 
 Redacta 3.3 Diagnóstico de comportamientos contrarios a la convivencia. en formato HTML:
 """
@@ -162,6 +169,7 @@ determinados grupos étnicos, así como a personas con orientaciones sexuales e 
 IMPORTANTE: 
 - El documento generado debe tener un mínimo de 20 párrafos largos.
 - No incluyas un párrafo de resumen de la sección.
+- No incluyas el subtítulo de la sección, solo el contenido.
 
 Redacta 3.4 Diagnóstico de delitos. en formato HTML:
 """
@@ -193,6 +201,9 @@ según los puntos extraídos de las politicas extraidas del contexto: {context}.
 IMPORTANTE: 
 - El documento generado debe tener un mínimo de 20 párrafos largos.
 - No incluyas un párrafo de resumen de la sección.
+- Solo para la sección 4. no incluyas el nombre de la sección, solo el contenido.
+- Para los subtitulos 4.1 4.2 y 4.3 redacta 5 párrafos para cada uno.
+- Para los subtitulos 4.1 4.2 y 4.3 incluye sus titulos y su contenido.
 
 Redacta parafos extensos de las secciones en formato HTML:
 """
@@ -221,6 +232,8 @@ IMPORTANTE:
 - El documento generado debe tener un mínimo de 10 párrafos extensos.
 - No incluyas un párrafo de resumen de la sección.
 - No aumentes otras secciones
+- Solo para la sección 5. no incluyas el nombre de la sección, solo el contenido.
+- Para los subtitulos 5.1 incluye sus titulos y su contenido.
 
 Redacta parafos extensos de las secciones en formato HTML:
 """
@@ -237,19 +250,21 @@ redacción de los siguientes puntos:
 
 La sección se basa en los delitos seleccionados en {seccion_context} de los delitos detallados el {delitos_mes_a_mes},
 a partir estos detalla lo siguiente::
-- Presupuesto estimado para la implementación de las estrategias de intervención.
-- Recursos necesarios para la implementación de las estrategias de intervención.
-- Asignación de responsabilidades para la implementación de las estrategias de intervención.
+- Cómo definir el presupuesto estimado para la implementación de las estrategias de intervención.
+- Cómo asignar recursos necesarios para la implementación de las estrategias de intervención.
+- Quiénes son los actores responsables para la implementación de las estrategias de intervención.
 
 Sobre el formato:
 - Incluye negritas, cursivas y listas para ayudar al lector a identificar los puntos clave.
-- Incluye una tabla donde se haga un plan de división del presupuesto estimado para la implementación
-de las estrategias de intervención de manera detallada.
+- Incluye una tabla donde se explique como hacer un plan de división del presupuesto estimado para la implementación
+de las estrategias de intervención donde guie al usuario cómo 
 
 IMPORTANTE: 
 - El documento generado debe tener un mínimo de 10 párrafos extensos.
 - No incluyas un párrafo de resumen de la sección.
 - No aumentes otras secciones
+- Solo para la sección 6. no incluyas el nombre de la sección, solo el contenido.
+- Para los subtitulos 6.1 6.2 y 6.3 incluye sus titulos y su contenido.
 
 Redacta parafos extensos para cada sección del punto 6 en formato HTML:
 """
