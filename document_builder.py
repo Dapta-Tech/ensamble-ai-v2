@@ -114,7 +114,8 @@ if __name__ == "__main__":
     llm = get_llm()
 
     #municipio = "Ábrego (Nsa)"
-    municipio = "Bogotá, D.C. Cap."
+    #municipio = "Bogotá, D.C. Cap."
+    municipio = "Timaná (Hui)"
     #Pasar en minísculas, volver minúsculas
 
     delitos_mes_a_mes = get_delitos_mes_a_mes(municipio)
