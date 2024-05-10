@@ -109,6 +109,57 @@ def get_prompt_result(vectors, prompt, question, llm, delitos_mes_a_mes, tpcmh, 
                             chain)
     return response
 
+def get_delitos_tpcmh(municipio):
+    file_path = "data/indicadores tpcmh/"
+    dfs = []
+
+    # Definir los años a considerar
+    años_relevantes = ['2019', '2020', '2021', '2022', '2023']
+
+    for archivo in os.listdir(file_path):
+        if archivo.endswith('.csv'):
+            ruta_completa = os.path.join(file_path, archivo)
+
+            try:
+                # Leer el archivo, utilizando low_memory=False para evitar el DtypeWarning
+                df = pd.read_csv(ruta_completa, low_memory=False)
+
+                # Filtrar por municipio y añadir columna de tipo de delito
+                df_municipio = df[df['Municipio'] == municipio].copy()
+                tipo_delito = archivo.replace('.csv', '')
+                df_municipio.loc[:, 'Tipo delito'] = tipo_delito
+
+                # Transformar años en filas y filtrar solo los años relevantes
+                df_melted = df_municipio.melt(id_vars=['Municipio', 'Tipo delito'], var_name='Año', value_name='Incidentes')
+                df_melted = df_melted[df_melted['Año'].isin(años_relevantes)]
+
+                # Convertir 'Incidentes' a tipo numérico, manejando valores no numéricos como NaN
+                df_melted['Incidentes'] = pd.to_numeric(df_melted['Incidentes'], errors='coerce')
+
+                dfs.append(df_melted)
+
+            except Exception as e:
+                print(f"Error al procesar {archivo}: {e}")
+
+    # Concatenar todos los dataframes
+    df_completo = pd.concat(dfs, ignore_index=True)
+
+    # Agrupar por año y tipo de delito y calcular el total de incidentes
+    df_agrupado = df_completo.groupby(['Año', 'Tipo delito']).sum().reset_index()
+    df_final = df_agrupado[['Año', 'Tipo delito', 'Incidentes']]
+
+    # Ordenar por tipo de delito y luego por año
+    df_final = df_final.sort_values(by=['Tipo delito', 'Año'])
+
+    # Construir la cadena de resultado
+    cadena_resultado = ""
+    for index, row in df_final.iterrows():
+        cadena_resultado += f"El total del delitos por TPCMH: {row['Tipo delito']}, en el año: {row['Año']}, fue de: {round(row['Incidentes'], 2)}\n"
+    print ('------------------cadena_resultado TPCMH---------------------')
+    print (cadena_resultado)
+
+    return cadena_resultado
+
 #Crear la función 
 if __name__ == "__main__":
     llm = get_llm()
@@ -119,6 +170,7 @@ if __name__ == "__main__":
     #Pasar en minísculas, volver minúsculas
 
     delitos_mes_a_mes = get_delitos_mes_a_mes(municipio)
+    delitos_tpcmh = get_delitos_tpcmh(municipio)
 
     question_1 = """Generar la sección 1. de Introducción del documento 
     piscc 2024-2027 en el municipio de {municipio} mencionando los principales retos del municipio"""
