@@ -160,17 +160,18 @@ def get_delitos_tpcmh(municipio):
 
     return cadena_resultado
 
-def mejorar_texto(texto, prompt):
+def generate_text(paragraph_context, texto, prompt):
     client = OpenAI()
 
     completion = client.chat.completions.create(
     model="gpt-4o",
     messages=[
-        {"role": "system", "content": """Eres un botón que mejorar el texto de un usuario, 
-        recibirás como input el texto que el usuario quiere que mejores. debes aplicar la
-        mejora que se solicita y devolver solo el párrafo mejorado.
-        Solo debes devolver el texto mejorado, no debes agregar nada más al texto."""},
-        {"role": "user", "content": f"Texto '{texto}', Mejora: '{prompt}', Texto mejorado: "}])
+        {"role": "system", "content": """Eres un botón que mejorar el texto de un usuario y crea
+        nuevos párrafos, recibirás como input el texto que el usuario quiere que mejores. debes aplicar la
+        mejora que se solicita y devolver solo el párrafo generado.
+        Solo debes devolver el texto mejorado y usar el contexto del párrafo anterior (en caso de que 
+        exista) para dar  continuidad., no debes agregar nada más al texto."""},
+        {"role": "user", "content": f"Texto '{texto}', Mejora: '{prompt}', párrafo anterior: {paragraph_context}, Texto mejorado: "}])
     
     return completion.choices[0].message.content
 
@@ -179,8 +180,8 @@ if __name__ == "__main__":
     
     texto = "Objetivo general: Generar acciones y condiciones propicias para la seguridad y convivencia ciudadana en el municipio de Fortul, mediante la articulacion interinstitucional y comunitaria."
     prompt = "Desarrolla 3 objetivos especificos a aprtir del texto anterior."
-
-    print(mejorar_texto(texto, prompt))
+    paragraph_context = ""
+    print(generate_text(paragraph_context, texto, prompt))
     
     # Uso de los prompts
     # llm = get_llm()
