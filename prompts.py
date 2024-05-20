@@ -175,9 +175,6 @@ IMPORTANTE:
 
 Redacta 3.4 Diagnóstico de delitos. en formato HTML:
 """
-#Integrar tpcmh
-#Integrar grupos étnicos
-#Comunidad LGBTQ+
 
 prompt_4_Focalizacion ="""
 Tu tarea es {question} para el documento piscc 2024 continuando a la sección previa: {seccion_context}.
@@ -253,85 +250,117 @@ La sección se basa en los delitos seleccionados en {seccion_context} de los del
 - Detalle de cada estrategia de intervención para cada uno de los delitos seleccionados.
 - Justificación de la selección de las estrategias de intervención.
 - Relación de las estrategias de intervención con los objetivos del PISCC.
-- Relación de las estrategias de intervención con los resultados esperados del PISCC.
-- Relación de las estrategias de intervención con los indicadores de gestión y resultados del PISCC.
+- Explicacion de las tablas de presupuesto y un ejemplo de la tabla.
 
 Sobre el formato:
 - Incluye cursivas para ayudar al lector a identificar los puntos clave.
-- Incluye la justificación de responsabilidad del alcalde en la implementación de las estrategias de intervención.
+- No incluyas presupuesto, solo la explicación de como llenar las tablas.
+- Solo para la sección 6. no incluyas el nombre de la sección, solo el contenido.
+- Incluye los subtitulos 6.1 6.2 y 6.3.
 
 IMPORTANTE: 
 - El documento generado debe tener un mínimo de 10 párrafos extensos.
 - No incluyas un párrafo de resumen de la sección.
 - No aumentes otras secciones.
-- Solo para la sección 5. no incluyas el nombre de la sección, solo el contenido.
 - Incluye tablas que expliquen como llenar en base al presupuesto.
-- Para los subtítulos 5.1 incluye sus títulos y su contenido.
 
 Redacta párrafos extensos de las secciones en formato HTML:"""
 
 prompt_7_Implementacion = """
-<!DOCTYPE html>
-<html>
-<body>
+Tu tarea es {question} para el documento piscc 2024 continuando a la sección previa: {seccion_context}.
 
-<p>La implementación es la fase donde las estrategias, programas y proyectos del PISCC cobran vida. Este punto define cómo se llevarán a la práctica las acciones planeadas para mejorar la seguridad y la convivencia en tu municipio.</p>
+La sección 7 del municipio: {municipio} Sigue el siguiente contexto:{context} para la
+redacción de los siguientes puntos:
+7. Implementación del PISCC
+7.1 Puesta en Marcha de Estrategias
+7.2 Coordinación Interinstitucional
+7.3 Evaluación de Avances
 
-<h2>7.1 Puesta en Marcha de Estrategias</h2>
+La sección se basa en los delitos seleccionados en {seccion_context} de los delitos detallados el {delitos_mes_a_mes},
+a partir estos detalla lo siguiente::
+- Cómo Poner en marcha las estrategias del PISCC paraasegurar la coordinación entre las instituciones, 
+y monitorear el progreso de la implementación.
+- Crea un cronograma, asigna recursos, planifica capacitaciones, desarrolla un plan de comunicación,
+y establece un proceso para monitorear la implementación.
+- Define roles y responsabilidades, crea comités de seguimiento, considera plataformas de colaboración, y busca convenios de colaboración.
+- Define indicadores de implementación, realiza evaluaciones de procesos, y elabora informes de avance.
 
-<p>En esta sección, se describe el proceso de inicio y ejecución de las estrategias del PISCC.  La clave es detallar las acciones concretas que se llevarán a cabo, los plazos, los responsables y los mecanismos de seguimiento.</p>
+Sobre el formato:
+- Incluye cursivas para ayudar al lector a identificar los puntos clave.
+- Incluye la justificación de responsabilidad del alcalde en la implementación de las estrategias de intervención.
+- Solo para la sección 7. no incluyas el nombre de la sección, solo el contenido.
+- Incluye los subtitulos 7.1 7.2 y 7.3.
 
-<h3>Pasos:</h3>
+IMPORTANTE: 
+- El documento generado debe tener un mínimo de 10 párrafos extensos.
+- No incluyas un párrafo de resumen de la sección.
+- No aumentes otras secciones.
 
-<ol>
-<li><strong>Para cada programa o proyecto, describe:</strong>
-<ul>
-    <li><strong>Acciones específicas:</strong> Detalla las actividades que se realizarán para implementar la estrategia (ej: talleres de capacitación, campañas de sensibilización, instalación de cámaras de seguridad, mesas de trabajo con la comunidad, etc.).</li>
-    <li><strong>Cronograma:</strong> Define el calendario de ejecución de cada acción, especificando fechas de inicio y fin.  Utiliza un diagrama de Gantt o una tabla para visualizar el cronograma.</li>
-    <li><strong>Recursos:</strong>  Indica los recursos humanos, materiales y financieros necesarios para cada acción, y cómo se garantizará su disponibilidad. (Ej: presupuesto asignado, personal contratado, equipos disponibles, etc.).</li>
-    <li><strong>Mecanismos de seguimiento:</strong>  Establece cómo se monitoreará el progreso de cada acción, los indicadores que se utilizarán (ver punto 5.3 de la Guía PISCC) y la frecuencia del seguimiento (ej: mensual, trimestral, etc.). Define quiénes serán responsables del seguimiento y cómo se reportarán los avances. </li>
-</ul>
-</li>
-</ol>
-
-<h3>Ejemplo:</h3>
-
-<table>
-<caption>Programa: Prevención de la Violencia Juvenil</caption>
-<thead>
-<tr>
-    <th>Acción</th>
-    <th>Descripción</th>
-    <th>Cronograma</th>
-    <th>Recursos</th>
-    <th>Mecanismos de Seguimiento</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-    <td>Talleres de Habilidades para la Vida</td>
-    <td>Se implementarán talleres para jóvenes en riesgo, en temas como resolución de conflictos, manejo de emociones y toma de decisiones responsables. Los talleres se realizarán en instituciones educativas y espacios comunitarios, con la participación de psicólogos y trabajadores sociales.</td>
-    <td>
-    <table>
-        <thead>
-        <tr>
-            <th>Mes</th>
-            <th>Febrero</th>
-            <th>Marzo</th>
-            <th>Abril</th>
-            <th>...</th>
-            <th>Diciembre</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>Talleres de Habilidades para la Vida</td>
-            <td>Inicio</td>
-            <td>En curso</td>
-            <td>En curso</td>
-            <td>...</td>
-
+Redacta parafos extensos de las secciones en formato HTML:
 """
+
+prompt_8_Seguimiento = """
+Tu tarea es {question} para el documento piscc 2024 continuando a la sección previa: {seccion_context}.
+
+La sección 8 del municipio: {municipio} Sigue el siguiente contexto:{context} para la
+redacción de los siguientes puntos:
+8. Seguimiento y Evaluación del PISCC
+8.1 Monitoreo de Indicadores de Gestión
+8.2 Evaluación de Impacto
+8.3 Ajustes y Mejoras Continuas
+
+La sección se basa en los delitos seleccionados en {seccion_context} de los delitos detallados el {delitos_mes_a_mes},
+a partir estos detalla lo siguiente::
+- Establece la frecuencia de seguimiento (mensual, trimestral, etc.).
+- Especifica las herramientas (hojas de cálculo, SisPT, etc.).
+- Describe los sistemas de registro de información que es el "creador de PISCC con inteligencia artificial".
+- Explica cómo se analizarán los datos y se crearán informes.
+- Define el objetivo principal de la evaluación (medir resultados, identificar efectos, obtener evidencia).
+
+Sobre el formato:
+- Incluye cursivas para ayudar al lector a identificar los puntos clave.
+- Incluye la justificación de responsabilidad del alcalde en la implementación de las estrategias de intervención.
+- Solo para la sección 8. no incluyas el nombre de la sección, solo el contenido.
+- Incluye los subtitulos 8.1 8.2 y 8.3.
+
+IMPORTANTE: 
+- El documento generado debe tener un mínimo de 10 párrafos extensos.
+- No incluyas un párrafo de resumen de la sección.
+- No aumentes otras secciones
+
+Redacta parafos extensos de las secciones en formato HTML:
+"""
+
+prompt_9_Anexos = """
+Tu tarea es {question} para el documento piscc 2024 continuando a la sección previa: {seccion_context}.
+
+La sección 9 del municipio: {municipio} Sigue el siguiente contexto:{context} para la
+redacción de los siguientes puntos:
+9.Anexos
+9.1 Documentos de Apoyo
+9.2 Informes de Seguimiento
+9.3 Otros Recursos Relevantes de Apoyo
+9.2 Informes de Seguimiento
+9.3 Otros Recursos Relevantes
+
+La sección se basa en apoyar con documentación adicional para el PISCC, a partir estos detalla lo siguiente:
+- Marco legal, políticas públicas, Plan Nacional de Desarrollo, estudios y diagnósticos.
+- Informes de monitoreo, evaluaciones de procesos, evaluaciones de impacto.
+- Otros Recursos Relevantes: Mapas, gráficos, tablas, material de comunicación, recursos de capacitación.
+
+Sobre el formato:
+- Incluye cursivas para ayudar al lector a identificar los puntos clave.
+- Solo para la sección 9. no incluyas el nombre de la sección, solo el contenido.
+- Incluye los subtitulos 9.1 9.2 y 9.3.
+
+IMPORTANTE: 
+- El documento generado debe tener un mínimo de 10 párrafos extensos.
+- No incluyas un párrafo de resumen de la sección.
+- No aumentes otras secciones
+
+Redacta parafos extensos de las secciones en formato HTML:
+"""
+
 prompts_dict = { "1 Introducción": prompt_1_Introduccion,
                 "2 Marco Normativo": prompt_2_Introduccion,
                 "3 Diagnostico 3.1": prompt_3_1_Diagnostico, 
