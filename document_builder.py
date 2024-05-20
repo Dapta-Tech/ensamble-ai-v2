@@ -184,14 +184,14 @@ if __name__ == "__main__":
     print(generate_text(paragraph_context, texto, prompt))
     
     # Uso de los prompts
-    # llm = get_llm()
+    llm = get_llm()
 
-    # #municipio = "Ábrego (Nsa)"
-    # municipio = "Bogotá, D.C. Cap."
+    ##municipio = "Ábrego (Nsa)"
+    municipio = "Bogotá, D.C. Cap."
     # #municipio = "Timaná (Hui)"
 
-    # delitos_mes_a_mes = get_delitos_mes_a_mes(municipio)
-    # delitos_tpcmh = get_delitos_tpcmh(municipio)
+    delitos_mes_a_mes = get_delitos_mes_a_mes(municipio)
+    delitos_tpcmh = get_delitos_tpcmh(municipio)
 
     # question_1 = """Generar la sección 1. de Introducción del documento 
     # piscc 2024-2027 en el municipio de {municipio} mencionando los principales retos del municipio"""
@@ -347,7 +347,22 @@ if __name__ == "__main__":
     # print("Sección 5")
     # print(prompt_result_5)
 
-    # print(prompts_dict["6 Financiamiento"])
+    question_5 = """
+    Genera la sección 6 6. Planeación Financiera y Operativa del PISCC 2024-2027. 
+    # para el municipio de {municipio}, donde guiarás al usuario a cómo crear tablas de presupuesto y
+    estrategias enfocadas a cada delito"""
+    prompt_result_6 = get_prompt_result(vectors = ["1-Politica-Publica",
+                                            "1-Politica-Publica_Leyes_Politicas-Planes",
+                                            "4-Base-estrategias"],
+                                            prompt = prompts_dict["5 Formulación"],
+                                            question = question_5,
+                                            llm = llm,
+                                            delitos_mes_a_mes = delitos_mes_a_mes,
+                                            tpcmh = "No hay registros",
+                                            municipio = municipio,
+                                            seccion_context = "prompt_result_5")
+
+
     # print(prompts_dict["7 Implementación"])
     # print(prompts_dict["8 Seguimiento"])
     # print(prompts_dict["9 Anexos"])
