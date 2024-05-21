@@ -10,6 +10,7 @@ from langchain_openai import OpenAIEmbeddings
 from operator import itemgetter
 from prompts import prompts_dict
 from langchain_core.prompts import ChatPromptTemplate
+from glob import glob
 
 #Load bases from a list of namespaces
 def load_bases(index_name= "", bases_list = []):
@@ -70,30 +71,46 @@ def get_response(question,delitos_mes_a_mes,tpcmh,municipio,seccion_context, cha
     return response
 
 def get_delitos_mes_a_mes(municipio):
-    file_path = "data/indicadores mes a mes/"
-
-    archivos_csv = [archivo for archivo in os.listdir(file_path) if archivo.endswith('.csv')]
-
-    # Especificar dtype para evitar advertencias de tipos de datos mezclados
-    datos = pd.concat([pd.read_csv(os.path.join(file_path, archivo), sep=',', dtype=str) for archivo in archivos_csv])
-
-    datos = datos[datos['Municipio'] == municipio]
-
-    datos.rename(columns={'Estadísticas (1)': 'delito'}, inplace=True)
-
-    # Seleccionar las columnas requeridas
-    columnas_requeridas = ["Tema", "delito", "Municipio", "Σ Cantidad", 
-                        "Mayor de Edad", "Menor de edad", "Edad n.d.", "Masculino", 
-                        "Femenino", "Año"]
-    datos_seleccionados = datos[columnas_requeridas]
-
-    suma_cantidad_por_año = datos_seleccionados.groupby(["Año", "delito", "Municipio"])["Σ Cantidad"].sum().reset_index()
+    carpeta_csv = "data\indicadores mes a mes"
+    # Lista para almacenar los DataFrames
+    dfs = []
     
-    for index, row in suma_cantidad_por_año.iterrows():
-        cadena = f"El delito {row['delito']}, del municipio de {row['Municipio']} es igual a {row['Σ Cantidad']} en el año {row['Año']}"
-        #print(cadena)
+    # Leer todos los archivos CSV en la carpeta
+    for archivo in os.listdir(carpeta_csv):
+        if archivo.endswith('.csv'):
+            df = pd.read_csv(os.path.join(carpeta_csv, archivo))
+            dfs.append(df)
     
-    return cadena
+    # Concatenar todos los DataFrames
+    df_total = pd.concat(dfs, ignore_index=True)
+    
+    # Filtrar por municipio
+    df_municipio = df_total[df_total['Municipio'] == municipio]
+    
+    # Filtrar por años de interés
+    df_municipio = df_municipio[df_municipio['Año'].between(2019, 2023)]
+    
+    # Agrupar por delito y año y realizar la sumatoria
+    resumen = df_municipio.groupby(['Estadísticas (1)', 'Año']).agg(
+        total=('Σ Cantidad', 'sum'),
+        femeninos=('Femenino', 'sum'),
+        lgtbiq=('LGTBIQ+', 'sum')
+    ).reset_index()
+    
+    # Crear el texto resumen
+    texto = ""
+    for index, row in resumen.iterrows():
+        delito = row['Estadísticas (1)']
+        año = row['Año']
+        total = row['total']
+        femeninos = row['femeninos']
+        lgtbiq = row['lgtbiq']
+        
+        texto += (
+                f"El delito de: \"{delito}\", presentó el año: {año} un total de {total}, "
+                f"{femeninos} eran mujeres.\n")
+    
+    return texto
 
 def get_prompt_result(vectors, prompt, question, llm, delitos_mes_a_mes, tpcmh, municipio, seccion_context):
     
@@ -176,6 +193,21 @@ def generate_text(paragraph_context, texto, prompt):
     
     return completion.choices[0].message.content
 
+def get_delitos_new_section(delito, delitos, tpcmh, municipio):
+    client = OpenAI()
+
+    completion = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {"role": "system", "content": """Eres un botón que toma como contexto la información de delitos y 
+        tasa por cada mil habitantes(tpcmh) de un municipio y redacta 10 párrafos en formato HTML de información detallada sobre
+        la tendencia del delito principal {delito}, evolución a través de los años, y análisis estadístico y relación entre
+        las cifras, no agregues un párrafo de resumen."""},
+        {"role": "user", "content": f"delito principal: {delito}, Delitos '{delitos}', tpcmh: '{tpcmh}', Municipio: {municipio}, Texto generado en formato HTML: "}])
+    
+    return completion.choices[0].message.content
+
+
 #Crear la función 
 if __name__ == "__main__":
     
@@ -192,7 +224,17 @@ if __name__ == "__main__":
     # #municipio = "Timaná (Hui)"
 
     delitos_mes_a_mes = get_delitos_mes_a_mes(municipio)
+    print(delitos_mes_a_mes)
+    print("--------------------")
+    print("--------------------")
+    print("--------------------")
     delitos_tpcmh = get_delitos_tpcmh(municipio)
+    print(delitos_tpcmh)
+    seccion_nueva = get_delitos_new_section("Violencia Intrafamiliar" , delitos_mes_a_mes, delitos_tpcmh, municipio)
+    print("Sección nueva")
+    print(seccion_nueva)
+
+    print("--------------------")
 
     question_1 = """Generar la sección 1. de Introducción del documento 
     piscc 2024-2027 en el municipio de {municipio} mencionando los principales retos del municipio"""
