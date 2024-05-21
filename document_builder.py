@@ -232,7 +232,7 @@ if __name__ == "__main__":
 
     question_3 = """Generar la sección 3. Diagnóstico de la Situación de Seguridad y Convivencia Ciudadana 
     de el municipio de {municipio} donde darás información del actual alcalde de {municipio} y sus responsabilidades para 
-    ejecutar el plan piscc 2024-2027"""
+    ejecutar el plan piscc 2024-2027 enfocándote en las métricas de delitos y tasa cada mil habitantes."""
     prompt_result_3 = get_prompt_result(vectors = ["1-Politica-Publica",
                                         "4-Base-estrategias"],
                                         prompt = prompts_dict["3 Diagnostico 3.2"],
@@ -246,8 +246,8 @@ if __name__ == "__main__":
     print(prompt_result_3)
 
     question_3_1 = """Generar la sección 3.1 Diagnóstico de la Situación de Seguridad y 
-    Convivencia Ciudadana. de el municipio de {municipio}\
-    con base en los siguientes delitos: {delitos_mes_a_mes}"""
+    Convivencia Ciudadana. de el municipio de {municipio} donde realizarás un estudio
+    estadístico minucioso de la situación de delitos y la tasa por cada cien mil habitantes (tpcmh)"""
     prompt_result_3_1 = get_prompt_result(vectors = ["1-Politica-Publica",
                                         "4-Base-estrategias"],
                                         prompt = prompts_dict["3 Diagnostico 3.1"],
@@ -260,9 +260,10 @@ if __name__ == "__main__":
     print("Sección 31")
     print(prompt_result_3_1)
 
-    question_3_2 = """Generar la sección 3.2 Diagnóstico de conflictividades. 
-    de el municipio de {municipio} en el documento piscc 2024 \
-    con base en los siguientes delitos: {delitos_mes_a_mes}"""
+    question_3_2 = """Generar la sección 3.2 Identificación de Problemas Prioritarios
+    de el municipio de {municipio} en el documento piscc 2024 donde seleccionarás y argumentarás
+    los 3 delitos más importantes en cuando a la información de delitos y tasa por cada cien mil habitantes (tpcmh),
+    incluye métricas claves para su identificación."""
 
     prompt_result_3_2 = get_prompt_result(vectors = ["1-Politica-Publica",
                                             "4-Base-estrategias",
@@ -277,7 +278,7 @@ if __name__ == "__main__":
     print("Sección 3 2")
     print(prompt_result_3_2)
 
-    question_3_3 = """Generar la sección 3.3 Diagnóstico de comportamientos contrarios a la convivencia. 
+    question_3_3 = """Generar la sección 3.3 Consulta a la Comunidad y Actores Clave.
     Tomando en cuenta principalmente comportamientos contrarios a la convivencia del municipio de {municipio}"""	
 
     prompt_result_3_3 = get_prompt_result(vectors = ["1-Politica-Publica",
@@ -294,9 +295,9 @@ if __name__ == "__main__":
     print(prompt_result_3_3)
 
     question_3_4 = """Generar la sección 3.4 Diagnóstico de delitos. 
-    En esta sección realizarás un detalle minucioso sobre los delitos detallados en
-    y en la tasa por cada cien mil habitantes (tpcmh) del municipio de {municipio} 
-    enfocandose en el tema de género y etnia del municipio de {municipio} ."""	
+    En esta sección realizarás un detalle minucioso sobre los delitos más frecuentes
+    y la tasa por cada cien mil habitantes (tpcmh) del municipio de {municipio} 
+    enfocandose en el tema de género y etnia del municipio de {municipio}."""	
 
     prompt_result_3_4 = get_prompt_result(vectors = ["1-Politica-Publica",
                                             "4-Base-estrategias",

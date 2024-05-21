@@ -63,13 +63,19 @@ Esta sección esta basada en la introducción a datos sobre el municipio de: {mu
 Siguiendo el siguiente contexto:{context} describe la información del municipio, del alcalde y sus
 principales funciones y resposnabilidad en la elaboración del piscc.
 
-Describe los delitos de manera detallada: {delitos_mes_a_mes}, junto 
-a la tasa por cada mil habitantes {tpcmh}.
+Para la redacción de la sección 3 se debe redactar la directa relación de delitos y el contexto del municipio.
+describiendo los siguientes puntos:
+- Características geográficas de {municipio}
+- Demografía de {municipio}
+- Actividades económicas de {municipio}
+- Infraestructura de {municipio}
+- Instituciones y organizaciones de {municipio}
+- Seguridad ciudadana de {municipio}
+- Justicia: se sugiere incorporar la capacidad de la Comisaría de Familia, vehículos con los que cuenta,
+infraestructura, equipos disponibles para las entidades que hacen parte de esta categoría. para el municipio de {municipio}
 
 Sobre el formato:
 - Incluye el uso de negritas al lector a identificar los puntos clave.
-- El nombre de la sección es "3. Diagnóstico de la Situación de Seguridad y Convivencia Ciudadana"
-- Siempre incluye datos numéricos.
 
 IMPORTANTE: 
 - El documento generado debe tener un mínimo de 5 párrafos largos.
@@ -78,7 +84,6 @@ IMPORTANTE:
 
 Redacta solo la Sección 3 en formato HTML:
 """
-#¿Cómo saber cuál es el alcalde alctual de cada municipio?
 
 prompt_3_1_Diagnostico = """
 Tu tarea es {question} para el documento piscc 2024 enlazando la sección previa: {seccion_context}.
@@ -90,20 +95,15 @@ a delitos en el municipio.
 Basa el documento en la información de delitos de los ultimos 5 años del municipio {municipio}
 detallado en la siguiente sección: {delitos_mes_a_mes} y en la tasa por cada mil habitantes {tpcmh}.
 
-Para la redacción de la sección 3.1 se debe redactar la directa relación de violencia y delitos 
+Para la redacción de la sección 3. se debe redactar la directa relación de violencia y delitos 
 descritos con los siguientes puntos:
-- Características geográficas de {municipio}
-- Demografía de {municipio}
-- Actividades económicas de {municipio}
-- Infraestructura de {municipio}
-- Instituciones y organizaciones de {municipio}
-- Seguridad ciudadana de {municipio}
-- Justicia: se sugiere incorporar la capacidad de la Comisaría de Familia, vehículos con los que cuenta,
-infraestructura, equipos disponibles para las entidades que hacen parte de esta categoría. para el municipio de {municipio}
+- Describe los delitos de manera detallada: {delitos_mes_a_mes}, junto a la tasa por cada mil habitantes {tpcmh}.
+- Incluye análisis por años de los delitos y la tpcmh.
+- Incluye análisis de tendencias de los delitos y la tpcmh.
+- Incluye análisis de la tpcch en comparación con otros municipios de la región.
 
 Sobre el formato:
 - No incluyas un párrafo de resumen de la sección.
-- Siempre incluye datos numéricos.
 
 IMPORTANTE: 
 - El documento generado debe tener un mínimo de 10 párrafos largos.
@@ -124,18 +124,15 @@ la seccion se redacta siguiendo los siguientes puntos:
 otras).
 4. Análisis de conflictividad del municipio {municipio} (causas y efectos de las conflictividades, barreras de 
 acceso a la justicia, tipologías de conflicto, entre otros).
-5. Mapeo de actores (organizaciones comunitarias, oferta de justicia y convivencia, entidades del 
-orden local, entre otros).
 
 Sobre el formato:
 - Incluye el uso de negritas y cursivas para ayudar al lector a identificar los puntos clave.
 - No incluyas un párrafo de resumen de la sección.
 - No incluyas el subtítulo de la sección, solo el contenido.
-- Incluye un análsis detendencias estádisticas entre los delitos de los últimos 5 años.
-- Siempre incluye datos numéricos.
+- Siempre justifica tu respuesta basándote en los antecedentes del municipio.
 
 IMPORTANTE: El documento generado debe tener un mínimo de 10 párrafos largos.
-Redacta 3.2 Diagnóstico de conflictividades. en formato HTML:
+Redacta 3.2 Identificación de Problemas Prioritarios. en formato HTML:
 """
 
 prompt_3_3_Diagnostico ="""
@@ -144,20 +141,18 @@ Tu tarea es {question} para el documento piscc 2024 continuando a la sección pr
 La sección 3.3 del municipio: {municipio} Sigue el siguiente contexto:{context}
 
 la seccion se redacta siguiendo los siguientes puntos:
-- Principales comportamientos contrarios a la convivencia. 
-- Número y tipo de comportamientos contrarios a la convivencia que afectan a personas de 
-determinados grupos étnicos, así como a personas con orientaciones sexuales e identidades de género diversas.
+- Mapeo de actores, organizaciones comunitarias, oferta de justicia y convivencia, entidades del 
+orden local, entre otros.
 
 Sobre el formato:
 - Incluye el uso de negritas, cursivas y listas para ayudar al lector a identificar los puntos clave.
-- Siempre incluye datos numéricos.
 
 IMPORTANTE: 
 - No incluyas un párrafo de resumen de la sección.
 - Redacta 3 párrafos para cada sección.
 - No incluyas el subtítulo de la sección, solo el contenido.
 
-Redacta 3.3 Diagnóstico de comportamientos contrarios a la convivencia. en formato HTML:
+Redacta 3.3 Consulta a la Comunidad y Actores Clave. en formato HTML:
 """
 
 prompt_3_4_Diagnostico ="""
@@ -170,7 +165,6 @@ La seccion se redacta siguiendo los siguientes puntos:
 determinados grupos étnicos, así como a personas con orientaciones sexuales e identidades de género diversas.
 - Detalle estadístico minucioso sobre los delitos en el municipio de {municipio} en los últimos 
 5 años detallados en la sección: {delitos_mes_a_mes} y tpcmh detallados en: {tpcmh}.
-
 
 IMPORTANTE: 
 - El documento generado debe tener un mínimo de 20 párrafos largos.
