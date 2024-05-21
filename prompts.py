@@ -63,12 +63,13 @@ Esta sección esta basada en la introducción a datos sobre el municipio de: {mu
 Siguiendo el siguiente contexto:{context} describe la información del municipio, del alcalde y sus
 principales funciones y resposnabilidad en la elaboración del piscc.
 
-Describe los delitos de manera general en un solo parrafo: {delitos_mes_a_mes}, junto 
+Describe los delitos de manera detallada: {delitos_mes_a_mes}, junto 
 a la tasa por cada mil habitantes {tpcmh}.
 
 Sobre el formato:
 - Incluye el uso de negritas al lector a identificar los puntos clave.
 - El nombre de la sección es "3. Diagnóstico de la Situación de Seguridad y Convivencia Ciudadana"
+- Siempre incluye datos numéricos.
 
 IMPORTANTE: 
 - El documento generado debe tener un mínimo de 5 párrafos largos.
@@ -102,6 +103,7 @@ infraestructura, equipos disponibles para las entidades que hacen parte de esta 
 
 Sobre el formato:
 - No incluyas un párrafo de resumen de la sección.
+- Siempre incluye datos numéricos.
 
 IMPORTANTE: 
 - El documento generado debe tener un mínimo de 10 párrafos largos.
@@ -130,6 +132,7 @@ Sobre el formato:
 - No incluyas un párrafo de resumen de la sección.
 - No incluyas el subtítulo de la sección, solo el contenido.
 - Incluye un análsis detendencias estádisticas entre los delitos de los últimos 5 años.
+- Siempre incluye datos numéricos.
 
 IMPORTANTE: El documento generado debe tener un mínimo de 10 párrafos largos.
 Redacta 3.2 Diagnóstico de conflictividades. en formato HTML:
@@ -147,6 +150,7 @@ determinados grupos étnicos, así como a personas con orientaciones sexuales e 
 
 Sobre el formato:
 - Incluye el uso de negritas, cursivas y listas para ayudar al lector a identificar los puntos clave.
+- Siempre incluye datos numéricos.
 
 IMPORTANTE: 
 - No incluyas un párrafo de resumen de la sección.
