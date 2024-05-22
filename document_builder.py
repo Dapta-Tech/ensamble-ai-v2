@@ -54,20 +54,24 @@ def get_chain(LOTR, llm, prompt):
         "delitos_mes_a_mes": itemgetter("delitos_mes_a_mes"),
         "tpcmh": itemgetter("tpcmh"),
         "municipio": itemgetter("municipio"),
-        "seccion_context": itemgetter("seccion_context")
+        "delito": itemgetter("delito"),
+        "seccion_context": itemgetter("seccion_context"),
+
     }
     | prompt
     | llm
     | StrOutputParser())
     return chain
 
-def get_response(question,delitos_mes_a_mes,tpcmh,municipio,seccion_context, chain):
+def get_response(question,delitos_mes_a_mes,tpcmh,municipio,delito,seccion_context,chain):
 
     response = chain.invoke({"question": question, 
                             "delitos_mes_a_mes": delitos_mes_a_mes,
                             "tpcmh": tpcmh,
                             "municipio": municipio,
-                            "seccion_context": seccion_context})
+                            "delito": delito,
+                            "seccion_context": seccion_context}
+                            )
     return response
 
 def get_delitos_mes_a_mes(municipio):
@@ -112,7 +116,7 @@ def get_delitos_mes_a_mes(municipio):
     
     return texto
 
-def get_prompt_result(vectors, prompt, question, llm, delitos_mes_a_mes, tpcmh, municipio, seccion_context):
+def get_prompt_result(vectors, prompt, question, llm, delitos_mes_a_mes, tpcmh, municipio, seccion_context, delito):
     
     vector_bases = load_bases(index_name="all-data-v1", bases_list=vectors)
     LOTR = get_LOTR(vector_bases)
@@ -123,6 +127,7 @@ def get_prompt_result(vectors, prompt, question, llm, delitos_mes_a_mes, tpcmh, 
                             delitos_mes_a_mes,
                             tpcmh,
                             municipio,
+                            delito,
                             seccion_context,
                             chain)
     return response
@@ -202,11 +207,119 @@ def get_delitos_new_section(delito, delitos, tpcmh, municipio):
         {"role": "system", "content": """Eres un botón que toma como contexto la información de delitos y 
         tasa por cada mil habitantes(tpcmh) de un municipio y redacta 10 párrafos en formato HTML de información detallada sobre
         la tendencia del delito principal {delito}, evolución a través de los años, y análisis estadístico y relación entre
-        las cifras, no agregues un párrafo de resumen."""},
-        {"role": "user", "content": f"delito principal: {delito}, Delitos '{delitos}', tpcmh: '{tpcmh}', Municipio: {municipio}, Texto generado en formato HTML: "}])
+        las cifras, no agregues un párrafo de resumen. IMPORTANTE: solo debes enfocarte en el delito principal {delito}"""},
+        {"role": "user", "content": f"Delito principal: {delito}, Delitos '{delitos}', tpcmh: '{tpcmh}', Municipio: {municipio}, Texto generado en formato HTML: "}])
     
     return completion.choices[0].message.content
 
+def get_estrategias(delito):
+    file_path = "data\estrategias\PROBLEMÁTICAS Y ESTRATEGIAS.csv"
+    df = pd.read_csv(file_path)
+    
+    df_problematica = df[df['PROBLEMÁTICA'] == delito]
+    textos_generados = []
+    
+    for index, row in df_problematica.iterrows():
+        texto = (f"El delito {row['PROBLEMÁTICA']}, tiene Objetivo macro: {row['OBJETIVO MACRO']}, "
+                f"nivel: {row['NIVEL']}, nombre de la estrategia: {row['NOMBRE DE LA ESTRATEGIA']}, "
+                f"Objetivo: {row['OBJETIVO DE LA ESTRATEGIA']}, con el indicador de gestión sugerido: {row['INDICADOR  DE GESTIÓN SUGERIDO']}, "
+                f"Indicador de impacto: {row.get('INDICADOR DE IMPACTO SUGERIDO', 'N/A')}, "
+                f"Acciones: {row['ACCIONES']} y responsables: {row['RESPONSABLES']}.")
+        textos_generados.append(texto)
+    
+    return textos_generados
+
+def get_estrategia_new_section(delito, municipio, seccion_delito):
+    client = OpenAI()
+    prompt = f"""
+    Eres un botón que genera texto, selecciona y redacta las estrategias de intervención para el delito 
+    argumentado en el context del municipio de.
+
+    Genera la siguiente información para la sección de piscc 2024:
+    - Redacta la elección de estrategias para el delito: {delito} principal en el municipio de {municipio} en formato de párrafo.
+    - Justificación de la selección de las estrategias de intervención en formato de párrafo.
+    - Relación de las estrategias de intervención con los resultados esperados del PISCC.
+
+    Sobre el formato:
+    - Incluye cursivas para ayudar al lector a identificar los puntos clave.
+    - Incluye el nombre de la estrategia.
+    - Desarrolla el objetivo de la estrategia.
+
+    IMPORTANTE: 
+    - No incluyas un párrafo de resumen de la sección.
+    - No aumentes otras secciones.
+    - No incluyas titulo.
+
+    Redacta 10 parafos extensos en formato HTML:
+    """
+    completion = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {"role": "system", "content": prompt},
+        {"role": "user", "content": f"Delito principal: {delito}, Municipio: {municipio}, Contexto sobre delitos: {seccion_delito},Texto generado en formato HTML: "}])
+    
+    return completion.choices[0].message.content
+
+def get_indicadores_new_section(delito, municipio, seccion_delito):
+    client = OpenAI()
+    prompt = f"""
+    Eres un botón que genera texto, selecciona y redacta las estrategias de intervención para el delito 
+    argumentado en el context del municipio de.
+
+    Genera la siguiente información para la sección de piscc 2024:
+    - Redacta la elección de estrategias para el delito: {delito} principal en el municipio de {municipio} en formato de párrafo.
+    - Justificación de la selección de las estrategias de intervención en formato de párrafo.
+    - Relación de las estrategias de intervención con los resultados esperados del PISCC.
+
+    Sobre el formato:
+    - Incluye cursivas para ayudar al lector a identificar los puntos clave.
+    - Incluye el nombre de la estrategia.
+    - Desarrolla el objetivo de la estrategia.
+
+    IMPORTANTE: 
+    - No incluyas un párrafo de resumen de la sección.
+    - No aumentes otras secciones.
+    - No incluyas titulo.
+
+    Redacta 10 parafos extensos en formato HTML:
+    """
+    completion = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {"role": "system", "content": prompt},
+        {"role": "user", "content": f"Delito principal: {delito}, Municipio: {municipio}, Contexto sobre delitos: {seccion_delito},Texto generado en formato HTML: "}])
+    
+    return completion.choices[0].message.content
+
+def get_indicadores_new_section(delito, municipio, seccion_delito, seccion_estrategia):
+    client = OpenAI()
+    prompt = f"""
+    Eres un botón que genera texto, selecciona y redacta las acciones a implementar segun la estrategia.
+
+    Genera la siguiente información para la sección de piscc 2024:
+    - Redacta la elección de acciones para el delito: {delito} principal en el municipio de {municipio} en formato de párrafo.
+    - Justificación de la selección de las estrategias de intervención en formato de párrafo.
+    - Relación de las estrategias de intervención con los resultados esperados del PISCC.
+
+    Sobre el formato:
+    - Incluye cursivas para ayudar al lector a identificar los puntos clave.
+    - Incluye el nombre de la estrategia.
+    - Desarrolla el objetivo de la estrategia.
+
+    IMPORTANTE: 
+    - No incluyas un párrafo de resumen de la sección.
+    - No aumentes otras secciones.
+    - No incluyas titulo.
+
+    Redacta 10 parafos extensos en formato HTML:
+    """
+    completion = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {"role": "system", "content": prompt},
+        {"role": "user", "content": f"Delito principal: {delito}, Municipio: {municipio}, Contexto sobre delitos: {seccion_delito}, Contexto sobre estrategias: {seccion_estrategia}, Texto generado en formato HTML: "}])
+    
+    return completion.choices[0].message.content
 
 #Crear la función 
 if __name__ == "__main__":
@@ -224,239 +337,245 @@ if __name__ == "__main__":
     # #municipio = "Timaná (Hui)"
 
     delitos_mes_a_mes = get_delitos_mes_a_mes(municipio)
-    print(delitos_mes_a_mes)
-    print("--------------------")
-    print("--------------------")
-    print("--------------------")
+    #print(delitos_mes_a_mes)
     delitos_tpcmh = get_delitos_tpcmh(municipio)
-    print(delitos_tpcmh)
-    seccion_nueva = get_delitos_new_section("Violencia Intrafamiliar" , delitos_mes_a_mes, delitos_tpcmh, municipio)
+    #print(delitos_tpcmh)
+    
+    delito = "Violencia Intrafamiliar" 
+    seccion_nueva_delito = get_delitos_new_section(delito, delitos_mes_a_mes, delitos_tpcmh, municipio)
     print("Sección nueva")
-    print(seccion_nueva)
-
+    print(seccion_nueva_delito)
     print("--------------------")
 
-    question_1 = """Generar la sección 1. de Introducción del documento 
-    piscc 2024-2027 en el municipio de {municipio} mencionando los principales retos del municipio"""
-
-    prompt_result_1 = get_prompt_result(vectors = ["1-Politica-Publica_PISCC-por-Municipio",
-                                        "4-Base-estrategias"],
-                                        prompt = prompts_dict["1 Introducción"],
-                                        question = question_1,
-                                        llm = llm,
-                                        delitos_mes_a_mes = delitos_mes_a_mes,
-                                        tpcmh = "No hay registros",
-                                        municipio = municipio,
-                                        seccion_context = "")
-    print("Sección 1")
-    print(prompt_result_1)
-
-    question_2 = """Generar la sección 2.Marco Normativo, donde se Menciona los 
-    pilares constitucionales y normativos asociados a la convivencia y la seguridad 
-    ciudadana en Colombia, sobre los cuales se debe alinear el PISCC.
-    piscc 2024-2027 en el municipio de {municipio} mencionando los principales retos
-    del municipio, incluye la infomración sobre Enfoque de discapacidad, Enfoque étnico 
-    Enfoque de género del municipio de {municipio}"""
-
-    prompt_result_2 = get_prompt_result(vectors = ["1-Politica-Publica_PISCC-por-Municipio",
-                                        "1-Politica-Publica_Leyes-Decretos",
-                                        "1-Politica-Publica_Documentos-Politica",
-                                        "4-Base-estrategias"],
-                                        prompt = prompts_dict["2 Marco Normativo"],
-                                        question = question_2,
-                                        llm = llm,
-                                        delitos_mes_a_mes = delitos_mes_a_mes,
-                                        tpcmh = "No hay registros",
-                                        municipio = municipio,
-                                        seccion_context = prompt_result_1)
-    print("Sección 2")
-    print(prompt_result_2)
-
-    question_3 = """Generar la sección 3. Diagnóstico de la Situación de Seguridad y Convivencia Ciudadana 
-    de el municipio de {municipio} donde darás información del actual alcalde de {municipio} y sus responsabilidades para 
-    ejecutar el plan piscc 2024-2027 enfocándote en las métricas de delitos y tasa cada mil habitantes."""
-    prompt_result_3 = get_prompt_result(vectors = ["1-Politica-Publica",
-                                        "4-Base-estrategias"],
-                                        prompt = prompts_dict["3 Diagnostico 3.2"],
-                                        question = question_3,
-                                        llm = llm,
-                                        delitos_mes_a_mes = delitos_mes_a_mes,
-                                        tpcmh = delitos_tpcmh,
-                                        municipio = municipio,
-                                        seccion_context = prompt_result_1)
-    print("Sección 3")
-    print(prompt_result_3)
-
-    question_3_1 = """Generar la sección 3.1 Diagnóstico de la Situación de Seguridad y 
-    Convivencia Ciudadana. de el municipio de {municipio} donde realizarás un estudio
-    estadístico minucioso de la situación de delitos y la tasa por cada cien mil habitantes (tpcmh)"""
-    prompt_result_3_1 = get_prompt_result(vectors = ["1-Politica-Publica",
-                                        "4-Base-estrategias"],
-                                        prompt = prompts_dict["3 Diagnostico 3.1"],
-                                        question = question_3_1,
-                                        llm = llm,
-                                        delitos_mes_a_mes = delitos_mes_a_mes,
-                                        tpcmh = delitos_tpcmh,
-                                        municipio = municipio,
-                                        seccion_context = prompt_result_3)
-    print("Sección 31")
-    print(prompt_result_3_1)
-
-    question_3_2 = """Generar la sección 3.2 Identificación de Problemas Prioritarios
-    de el municipio de {municipio} en el documento piscc 2024 donde seleccionarás y argumentarás
-    los 3 delitos más importantes en cuando a la información de delitos y tasa por cada cien mil habitantes (tpcmh),
-    incluye métricas claves para su identificación."""
-
-    prompt_result_3_2 = get_prompt_result(vectors = ["1-Politica-Publica",
-                                            "4-Base-estrategias",
-                                            "1-Politica-Publica_Fiscal" ],
-                                            prompt = prompts_dict["3 Diagnostico 3.2"],
-                                            question = question_3_2,
-                                            llm = llm,
-                                            delitos_mes_a_mes = delitos_mes_a_mes,
-                                            tpcmh = delitos_tpcmh,
-                                            municipio = municipio,
-                                            seccion_context = prompt_result_3_1)
-    print("Sección 3 2")
-    print(prompt_result_3_2)
-
-    question_3_3 = """Generar la sección 3.3 Consulta a la Comunidad y Actores Clave.
-    Tomando en cuenta principalmente comportamientos contrarios a la convivencia del municipio de {municipio}"""	
-
-    prompt_result_3_3 = get_prompt_result(vectors = ["1-Politica-Publica",
-                                            "4-Base-estrategias",
-                                            "1-Politica-Publica_Fiscal" ],
-                                            prompt = prompts_dict["3 Diagnostico 3.2"],
-                                            question = question_3_3,
-                                            llm = llm,
-                                            delitos_mes_a_mes = delitos_mes_a_mes,
-                                            tpcmh = delitos_tpcmh,
-                                            municipio = municipio,
-                                            seccion_context = prompt_result_3_2)
-    print("Sección 3 3")
-    print(prompt_result_3_3)
-
-    question_3_4 = """Generar la sección 3.4 Diagnóstico de delitos. 
-    En esta sección realizarás un detalle minucioso sobre los delitos más frecuentes
-    y la tasa por cada cien mil habitantes (tpcmh) del municipio de {municipio} 
-    enfocandose en el tema de género y etnia del municipio de {municipio}."""	
-
-    prompt_result_3_4 = get_prompt_result(vectors = ["1-Politica-Publica",
-                                            "4-Base-estrategias",
-                                            "1-Politica-Publica_Fiscal" ],
-                                            prompt = prompts_dict["3 Diagnostico 3.4"],
-                                            question = question_3_3,
-                                            llm = llm,
-                                            delitos_mes_a_mes = delitos_mes_a_mes,
-                                            tpcmh = delitos_tpcmh,
-                                            municipio = municipio,
-                                            seccion_context = prompt_result_3_3)
-    print("Sección 3 4 ")
-    print(prompt_result_3_4)
-
-
-    question_4 = """Generar la sección 4. Focalización y Priorización para la Planeación. 
-    para el municipio de {municipio}. donde identificarás factores para seleccionar los 3 delitos más frecuentes
-    detallados en {delitos_mes_a_mes}, además de las leyes que respaldan dicha selección."""	
-
-    prompt_result_4 = get_prompt_result(vectors = ["1-Politica-Publica",
-                                            "1-Politica-Publica_Leyes_Politicas-Planes",
-                                            "1-Politica-Publica_Fiscal",
-                                            "4-Base-estrategias"],
-                                            prompt = prompts_dict["4 Focalización"],
-                                            question = question_4,
-                                            llm = llm,
-                                            delitos_mes_a_mes = delitos_mes_a_mes,
-                                            tpcmh = "No hay registros",
-                                            municipio = municipio,
-                                            seccion_context = prompt_result_3_4)
-    print("Secccón 4")
-    print(prompt_result_4)
-
-    question_5 = """Generar la sección 5. Formulación Estratégica del PISCC 2024-2027. 
-    para el municipio de {municipio}, donde identificarás las estrategias y planes que se deben tomar en cuenta basandose en los 
-    delitos seleccionados en la sección anterior :{prompt_result_3_4}. Por ultimo menciona las responsabilidades con las estrategias
-    del alclade de {municipio}."""	
-
-    prompt_result_5 = get_prompt_result(vectors = ["1-Politica-Publica",
-                                            "1-Politica-Publica_Leyes_Politicas-Planes",
-                                            "4-Base-estrategias"],
-                                            prompt = prompts_dict["5 Formulación"],
-                                            question = question_5,
-                                            llm = llm,
-                                            delitos_mes_a_mes = delitos_mes_a_mes,
-                                            tpcmh = "No hay registros",
-                                            municipio = municipio,
-                                            seccion_context = "prompt_result_5")
-    print("Sección 5")
-    print(prompt_result_5)
-
-    question_6 = """
-    Generar la sección 6 6. Planeación Financiera y Operativa del PISCC 2024-2027. 
-    para el municipio de {municipio}, donde guiarás al usuario a cómo crear tablas de presupuesto y
-    estrategias enfocadas a cada delito"""
-    prompt_result_6 = get_prompt_result(vectors = ["1-Politica-Publica_Documentos-Politica",
-                                            "1-Politica-Publica_Leyes_Politicas-Planes",
-                                            "1-Politica-Publica_PISCC-por-Municipio",
-                                            "4-Base-estrategias"],
-                                            prompt = prompts_dict["6 Financiamiento"],
-                                            question = question_6,
-                                            llm = llm,
-                                            delitos_mes_a_mes = delitos_mes_a_mes,
-                                            tpcmh = delitos_tpcmh,
-                                            municipio = municipio,
-                                            seccion_context = prompt_result_5)
-    print("Sección 6")
-    print(prompt_result_6)
-
-    question_7 = """
-        Generar la sección 7. Implementación del PISCC
-        para el municipio de {municipio}, donde guiarás al usuario a cómo crear tablas de presupuesto y
-        estrategias enfocadas a cada delito"""
-    prompt_result_7 = get_prompt_result(vectors = ["1-Politica-Publica_Documentos-Politica",
-                                                "1-Politica-Publica_Leyes_Politicas-Planes",
-                                                "1-Politica-Publica_PISCC-por-Municipio",
-                                                "4-Base-estrategias"],
-                                                prompt = prompts_dict["7 Implementación"],
-                                                question = question_7,
-                                                llm = llm,
-                                                delitos_mes_a_mes = delitos_mes_a_mes,
-                                                tpcmh = delitos_tpcmh,
-                                                municipio = municipio,
-                                                seccion_context = prompt_result_6)
-
-    print("Sección 7")
-    print(prompt_result_7)
-
-    question_8 = """
-        Generar la sección 8. Seguimiento de seguimiento de piscc para el municipio de {municipio}, 
-        donde guiarás al usuario donde el objetivo es Asegurar que el PISCC se implemente de forma efectiva, 
-        se logren los resultados esperados y se mejoren las estrategias de forma continua."""
+    estrategias = get_estrategias(delito)
+    print(estrategias)
+    seccion_estrategias = get_estrategia_new_section(delito, municipio, seccion_nueva_delito)
     
-    prompt_result_8 = get_prompt_result(vectors = ["1-Politica-Publica_Documentos-Politica",
-                                                "1-Politica-Publica_Leyes_Politicas-Planes",
-                                                "1-Politica-Publica_PISCC-por-Municipio",
-                                                "4-Base-estrategias"],
-                                                prompt = prompts_dict["8 Seguimiento"],
-                                                question = question_8,
-                                                llm = llm,
-                                                delitos_mes_a_mes = delitos_mes_a_mes,
-                                                tpcmh = delitos_tpcmh,
-                                                municipio = municipio,
-                                                seccion_context = prompt_result_7)
-    print("Sección 8")
-    print(prompt_result_8)
+    seccion_accion = get_indicadores_new_section(delito, municipio, seccion_nueva_delito, seccion_estrategias)
+    print("Sección estrategias")
+    print(seccion_accion)
 
-    question_9 = """
-        Generar la sección 9. Evaluación del PISCC para el municipio de {municipio}, 
-        donde guiarás al usuario a definir qué documentos pueden servir de apoyo para la evaluación del PISCC."""
-    prompt_result_9 = get_prompt_result(vectors = ["1-Politica-Publica_PISCC-por-Municipio"],
-                                                prompt = prompts_dict["9 Anexos"],
-                                                question = question_9,
-                                                llm = llm,
-                                                delitos_mes_a_mes = delitos_mes_a_mes,
-                                                tpcmh = delitos_tpcmh,
-                                                municipio = municipio,
-                                                seccion_context = prompt_result_8)
-    print("Sección 9")
-    print(prompt_result_9)
+    # question_1 = """Generar la sección 1. de Introducción del documento 
+    # piscc 2024-2027 en el municipio de {municipio} mencionando los principales retos del municipio"""
+
+    # prompt_result_1 = get_prompt_result(vectors = ["1-Politica-Publica_PISCC-por-Municipio",
+    #                                     "4-Base-estrategias"],
+    #                                     prompt = prompts_dict["1 Introducción"],
+    #                                     question = question_1,
+    #                                     llm = llm,
+    #                                     delitos_mes_a_mes = delitos_mes_a_mes,
+    #                                     tpcmh = "No hay registros",
+    #                                     municipio = municipio,
+    #                                     seccion_context = "")
+    # print("Sección 1")
+    # print(prompt_result_1)
+
+    # question_2 = """Generar la sección 2.Marco Normativo, donde se Menciona los 
+    # pilares constitucionales y normativos asociados a la convivencia y la seguridad 
+    # ciudadana en Colombia, sobre los cuales se debe alinear el PISCC.
+    # piscc 2024-2027 en el municipio de {municipio} mencionando los principales retos
+    # del municipio, incluye la infomración sobre Enfoque de discapacidad, Enfoque étnico 
+    # Enfoque de género del municipio de {municipio}"""
+
+    # prompt_result_2 = get_prompt_result(vectors = ["1-Politica-Publica_PISCC-por-Municipio",
+    #                                     "1-Politica-Publica_Leyes-Decretos",
+    #                                     "1-Politica-Publica_Documentos-Politica",
+    #                                     "4-Base-estrategias"],
+    #                                     prompt = prompts_dict["2 Marco Normativo"],
+    #                                     question = question_2,
+    #                                     llm = llm,
+    #                                     delitos_mes_a_mes = delitos_mes_a_mes,
+    #                                     tpcmh = "No hay registros",
+    #                                     municipio = municipio,
+    #                                     seccion_context = prompt_result_1)
+    # print("Sección 2")
+    # print(prompt_result_2)
+
+    # question_3 = """Generar la sección 3. Diagnóstico de la Situación de Seguridad y Convivencia Ciudadana 
+    # de el municipio de {municipio} donde darás información del actual alcalde de {municipio} y sus responsabilidades para 
+    # ejecutar el plan piscc 2024-2027 enfocándote en las métricas de delitos y tasa cada mil habitantes."""
+    # prompt_result_3 = get_prompt_result(vectors = ["1-Politica-Publica",
+    #                                     "4-Base-estrategias"],
+    #                                     prompt = prompts_dict["3 Diagnostico 3.2"],
+    #                                     question = question_3,
+    #                                     llm = llm,
+    #                                     delitos_mes_a_mes = delitos_mes_a_mes,
+    #                                     tpcmh = delitos_tpcmh,
+    #                                     municipio = municipio,
+    #                                     seccion_context = prompt_result_1)
+    # print("Sección 3")
+    # print(prompt_result_3)
+
+    # question_3_1 = """Generar la sección 3.1 Diagnóstico de la Situación de Seguridad y 
+    # Convivencia Ciudadana. de el municipio de {municipio} donde realizarás un estudio
+    # estadístico minucioso de la situación de delitos y la tasa por cada cien mil habitantes (tpcmh)"""
+    # prompt_result_3_1 = get_prompt_result(vectors = ["1-Politica-Publica",
+    #                                     "4-Base-estrategias"],
+    #                                     prompt = prompts_dict["3 Diagnostico 3.1"],
+    #                                     question = question_3_1,
+    #                                     llm = llm,
+    #                                     delitos_mes_a_mes = delitos_mes_a_mes,
+    #                                     tpcmh = delitos_tpcmh,
+    #                                     municipio = municipio,
+    #                                     seccion_context = prompt_result_3)
+    # print("Sección 31")
+    # print(prompt_result_3_1)
+
+    # question_3_2 = """Generar la sección 3.2 Identificación de Problemas Prioritarios
+    # de el municipio de {municipio} en el documento piscc 2024 donde seleccionarás y argumentarás
+    # los 3 delitos más importantes en cuando a la información de delitos y tasa por cada cien mil habitantes (tpcmh),
+    # incluye métricas claves para su identificación."""
+
+    # prompt_result_3_2 = get_prompt_result(vectors = ["1-Politica-Publica",
+    #                                         "4-Base-estrategias",
+    #                                         "1-Politica-Publica_Fiscal" ],
+    #                                         prompt = prompts_dict["3 Diagnostico 3.2"],
+    #                                         question = question_3_2,
+    #                                         llm = llm,
+    #                                         delitos_mes_a_mes = delitos_mes_a_mes,
+    #                                         tpcmh = delitos_tpcmh,
+    #                                         municipio = municipio,
+    #                                         seccion_context = prompt_result_3_1)
+    # print("Sección 3 2")
+    # print(prompt_result_3_2)
+
+    # question_3_3 = """Generar la sección 3.3 Consulta a la Comunidad y Actores Clave.
+    # Tomando en cuenta principalmente comportamientos contrarios a la convivencia del municipio de {municipio}"""	
+
+    # prompt_result_3_3 = get_prompt_result(vectors = ["1-Politica-Publica",
+    #                                         "4-Base-estrategias",
+    #                                         "1-Politica-Publica_Fiscal" ],
+    #                                         prompt = prompts_dict["3 Diagnostico 3.2"],
+    #                                         question = question_3_3,
+    #                                         llm = llm,
+    #                                         delitos_mes_a_mes = delitos_mes_a_mes,
+    #                                         tpcmh = delitos_tpcmh,
+    #                                         municipio = municipio,
+    #                                         seccion_context = prompt_result_3_2)
+    # print("Sección 3 3")
+    # print(prompt_result_3_3)
+
+    # question_3_4 = """Generar la sección 3.4 Diagnóstico de delitos. 
+    # En esta sección realizarás un detalle minucioso sobre los delitos más frecuentes
+    # y la tasa por cada cien mil habitantes (tpcmh) del municipio de {municipio} 
+    # enfocandose en el tema de género y etnia del municipio de {municipio}."""	
+
+    # prompt_result_3_4 = get_prompt_result(vectors = ["1-Politica-Publica",
+    #                                         "4-Base-estrategias",
+    #                                         "1-Politica-Publica_Fiscal" ],
+    #                                         prompt = prompts_dict["3 Diagnostico 3.4"],
+    #                                         question = question_3_3,
+    #                                         llm = llm,
+    #                                         delitos_mes_a_mes = delitos_mes_a_mes,
+    #                                         tpcmh = delitos_tpcmh,
+    #                                         municipio = municipio,
+    #                                         seccion_context = prompt_result_3_3)
+    # print("Sección 3 4 ")
+    # print(prompt_result_3_4)
+
+
+    # question_4 = """Generar la sección 4. Focalización y Priorización para la Planeación. 
+    # para el municipio de {municipio}. donde identificarás factores para seleccionar los 3 delitos más frecuentes
+    # detallados en {delitos_mes_a_mes}, además de las leyes que respaldan dicha selección."""	
+
+    # prompt_result_4 = get_prompt_result(vectors = ["1-Politica-Publica",
+    #                                         "1-Politica-Publica_Leyes_Politicas-Planes",
+    #                                         "1-Politica-Publica_Fiscal",
+    #                                         "4-Base-estrategias"],
+    #                                         prompt = prompts_dict["4 Focalización"],
+    #                                         question = question_4,
+    #                                         llm = llm,
+    #                                         delitos_mes_a_mes = delitos_mes_a_mes,
+    #                                         tpcmh = "No hay registros",
+    #                                         municipio = municipio,
+    #                                         seccion_context = prompt_result_3_4)
+    # print("Secccón 4")
+    # print(prompt_result_4)
+
+    # question_5 = """Generar la sección 5. Formulación Estratégica del PISCC 2024-2027. 
+    # para el municipio de {municipio}, donde identificarás las estrategias y planes que se deben tomar en cuenta basandose en los 
+    # delitos seleccionados en la sección anterior :{prompt_result_3_4}. Por ultimo menciona las responsabilidades con las estrategias
+    # del alclade de {municipio}."""	
+
+    # prompt_result_5 = get_prompt_result(vectors = ["1-Politica-Publica",
+    #                                         "1-Politica-Publica_Leyes_Politicas-Planes",
+    #                                         "4-Base-estrategias"],
+    #                                         prompt = prompts_dict["5 Formulación"],
+    #                                         question = question_5,
+    #                                         llm = llm,
+    #                                         delitos_mes_a_mes = delitos_mes_a_mes,
+    #                                         tpcmh = "No hay registros",
+    #                                         municipio = municipio,
+    #                                         seccion_context = "prompt_result_5")
+    # print("Sección 5")
+    # print(prompt_result_5)
+
+    # question_6 = """
+    # Generar la sección 6 6. Planeación Financiera y Operativa del PISCC 2024-2027. 
+    # para el municipio de {municipio}, donde guiarás al usuario a cómo crear tablas de presupuesto y
+    # estrategias enfocadas a cada delito"""
+    # prompt_result_6 = get_prompt_result(vectors = ["1-Politica-Publica_Documentos-Politica",
+    #                                         "1-Politica-Publica_Leyes_Politicas-Planes",
+    #                                         "1-Politica-Publica_PISCC-por-Municipio",
+    #                                         "4-Base-estrategias"],
+    #                                         prompt = prompts_dict["6 Financiamiento"],
+    #                                         question = question_6,
+    #                                         llm = llm,
+    #                                         delitos_mes_a_mes = delitos_mes_a_mes,
+    #                                         tpcmh = delitos_tpcmh,
+    #                                         municipio = municipio,
+    #                                         seccion_context = prompt_result_5)
+    # print("Sección 6")
+    # print(prompt_result_6)
+
+    # question_7 = """
+    #     Generar la sección 7. Implementación del PISCC
+    #     para el municipio de {municipio}, donde guiarás al usuario a cómo crear tablas de presupuesto y
+    #     estrategias enfocadas a cada delito"""
+    # prompt_result_7 = get_prompt_result(vectors = ["1-Politica-Publica_Documentos-Politica",
+    #                                             "1-Politica-Publica_Leyes_Politicas-Planes",
+    #                                             "1-Politica-Publica_PISCC-por-Municipio",
+    #                                             "4-Base-estrategias"],
+    #                                             prompt = prompts_dict["7 Implementación"],
+    #                                             question = question_7,
+    #                                             llm = llm,
+    #                                             delitos_mes_a_mes = delitos_mes_a_mes,
+    #                                             tpcmh = delitos_tpcmh,
+    #                                             municipio = municipio,
+    #                                             seccion_context = prompt_result_6)
+
+    # print("Sección 7")
+    # print(prompt_result_7)
+
+    # question_8 = """
+    #     Generar la sección 8. Seguimiento de seguimiento de piscc para el municipio de {municipio}, 
+    #     donde guiarás al usuario donde el objetivo es Asegurar que el PISCC se implemente de forma efectiva, 
+    #     se logren los resultados esperados y se mejoren las estrategias de forma continua."""
+    
+    # prompt_result_8 = get_prompt_result(vectors = ["1-Politica-Publica_Documentos-Politica",
+    #                                             "1-Politica-Publica_Leyes_Politicas-Planes",
+    #                                             "1-Politica-Publica_PISCC-por-Municipio",
+    #                                             "4-Base-estrategias"],
+    #                                             prompt = prompts_dict["8 Seguimiento"],
+    #                                             question = question_8,
+    #                                             llm = llm,
+    #                                             delitos_mes_a_mes = delitos_mes_a_mes,
+    #                                             tpcmh = delitos_tpcmh,
+    #                                             municipio = municipio,
+    #                                             seccion_context = prompt_result_7)
+    # print("Sección 8")
+    # print(prompt_result_8)
+
+    # question_9 = """
+    #     Generar la sección 9. Evaluación del PISCC para el municipio de {municipio}, 
+    #     donde guiarás al usuario a definir qué documentos pueden servir de apoyo para la evaluación del PISCC."""
+    # prompt_result_9 = get_prompt_result(vectors = ["1-Politica-Publica_PISCC-por-Municipio"],
+    #                                             prompt = prompts_dict["9 Anexos"],
+    #                                             question = question_9,
+    #                                             llm = llm,
+    #                                             delitos_mes_a_mes = delitos_mes_a_mes,
+    #                                             tpcmh = delitos_tpcmh,
+    #                                             municipio = municipio,
+    #                                             seccion_context = prompt_result_8)
+    # print("Sección 9")
+    # print(prompt_result_9)

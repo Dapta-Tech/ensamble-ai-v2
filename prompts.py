@@ -190,6 +190,7 @@ La sección se basa en los delitos: {delitos_mes_a_mes} en los últimos 5 años.
 - Marco legal que respalda la focalización y priorización de los delitos.
 
 Sobre el formato:
+- Agrega un párrafo de introducción en la sección 4.
 - Incluye un poco de negritas, cursivas y listas para ayudar al lector a identificar los puntos clave.
 - Incluye una tabla donde se idnetifiquen los 3 delitos seleccionados y los puntos de selección de cada uno asignando un puntaje de 1 a 10
 según los puntos extraídos de las politicas extraidas del contexto: {context}.
@@ -198,7 +199,7 @@ según los puntos extraídos de las politicas extraidas del contexto: {context}.
 IMPORTANTE: 
 - El documento generado debe tener un mínimo de 20 párrafos largos.
 - No incluyas un párrafo de resumen de la sección.
-- Solo para la sección 4. no incluyas el nombre de la sección, solo el contenido.
+- no incluyas el primer titulo, solo el contenido.
 - Para los subtitulos 4.1 4.2 y 4.3 redacta 5 párrafos para cada uno.
 - Para los subtitulos 4.1 4.2 y 4.3 incluye sus titulos y su contenido.
 
@@ -354,9 +355,53 @@ Sobre el formato:
 IMPORTANTE: 
 - El documento generado debe tener un mínimo de 10 párrafos extensos.
 - No incluyas un párrafo de resumen de la sección.
-- No aumentes otras secciones
+- No aumentes otras secciones.
 
 Redacta parafos extensos de las secciones en formato HTML:
+"""
+
+prompt_generate_estrategias = """
+Eres un botón que genera texto, redacta las estrategias de intervención para el delito argumentado en el contexto:{seccion_context} 
+del municipio de {municipio}.
+
+Genera la saiguiente información para la sección de piscc 2024:
+- Elección de estrategias para el delito: {delito} principal en el municipio de {municipio}.
+- Justificación de la selección de las estrategias de intervención.
+- Relación de las estrategias de intervención con los resultados esperados del PISCC.
+
+Sobre el formato:
+- Incluye cursivas para ayudar al lector a identificar los puntos clave.
+- Incluye el nombre de la estrategia.
+- Desarrolla el objetivo de la estrategia.
+
+IMPORTANTE: 
+- No incluyas un párrafo de resumen de la sección.
+- No aumentes otras secciones.
+- No incluyas titulo.
+
+Redacta 10 parafos extensos en formato HTML:
+"""
+
+prompt_generate_acciones = """
+Eres un botón que genera texto, redacta las estrategias de intervención para el delito argumentado en el contexto:{seccion_context} 
+del municipio de {municipio}.
+
+Genera la saiguiente información para la sección de piscc 2024:
+- Redacta la elección de estrategias para el delito: {delito} principal en el municipio de {municipio} en formato de párrafo.
+- Justificación de la selección de las estrategias de intervención en formato de párrafo.
+- Relación de las estrategias de intervención con los resultados esperados del PISCC.
+
+Sobre el formato:
+- Incluye cursivas para ayudar al lector a identificar los puntos clave.
+- Incluye el nombre de la estrategia.
+- Desarrolla el objetivo de la estrategia.
+
+IMPORTANTE: 
+- No incluyas un párrafo de resumen de la sección.
+- No aumentes otras secciones.
+- No incluyas titulo.
+
+Redacta 10 parafos extensos en formato HTML:
 """
 
 prompts_dict = { "1 Introducción": prompt_1_Introduccion,
@@ -370,5 +415,7 @@ prompts_dict = { "1 Introducción": prompt_1_Introduccion,
             "6 Financiamiento" : prompt_6_Financiamiento,
             "7 Implementación" : prompt_7_Implementacion,
             "8 Seguimiento" : prompt_8_Seguimiento,
-            "9 Anexos" : prompt_9_Anexos
+            "9 Anexos" : prompt_9_Anexos,
+            "Generar estrategias" : prompt_generate_estrategias,
+            "Generar acciones" : prompt_generate_acciones
             }
