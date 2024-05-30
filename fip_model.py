@@ -6,9 +6,7 @@ from langchain.chains import create_history_aware_retriever, create_retrieval_ch
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.messages import AIMessage, HumanMessage
 from langchain_pinecone import PineconeVectorStore
-from langchain_community.document_transformers import (
-    EmbeddingsClusteringFilter
-)
+from langchain_community.document_transformers import EmbeddingsClusteringFilter
 from langchain.retrievers import ContextualCompressionRetriever
 from langchain.retrievers.document_compressors import DocumentCompressorPipeline
 from pinecone import Pinecone
@@ -29,10 +27,13 @@ from langchain_community.utilities import SQLDatabase
 from sqlalchemy import create_engine
 from langchain_community.agent_toolkits import create_sql_agent
 
-llm = ChatOpenAI(model_name="gpt-4o", temperature=0.5)
+#os.environ["OPENAI_API_KEY"] = ""
+llm = ChatOpenAI(model_name="gpt-4o", temperature=0)
+
 
 # Load bases from a list of namespaces
 def load_bases(index_name="", bases_list=[]):
+    #pc = Pinecone(api_key="")
     pc = Pinecone()
     index = pc.Index(index_name)
     embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
@@ -44,6 +45,7 @@ def load_bases(index_name="", bases_list=[]):
         vectorstore = None
     return big_vector
 
+
 def consultar_datos_por_municipio(query, municipio):
     print("step 1")
     print(query)
@@ -53,12 +55,14 @@ def consultar_datos_por_municipio(query, municipio):
 
     engine = create_engine(
         "postgresql://clients:bZqbYHeEA2x$Qa6KxnYVkX@clients.cluster-c9w8clqzjjhu.us-east-2.rds.amazonaws.com:5432/fip_db_ai_model"
-        )
+    )
 
     db = SQLDatabase(engine=engine)
     print(db.get_usable_table_names())
 
-    agent_executor = create_sql_agent(llm, db=db, verbose=True, agent_type="openai-tools")
+    agent_executor = create_sql_agent(
+        llm, db=db, verbose=True, agent_type="openai-tools"
+    )
     response = agent_executor.invoke(f"{query}, Mi Municipio: {municipio}")
     print(response)
     return response
@@ -383,24 +387,22 @@ def get_general_information_from_PDFs(consulta: str) -> str:
     big_vector = load_bases(index_name, bases_list)
     retriever_chain = get_LOTR(big_vector)
     filter_ordered_by_retriever = EmbeddingsClusteringFilter(
-    embeddings=OpenAIEmbeddings(),
-    num_clusters=5,
-    num_closest=1,
-    sorted=True,
+        embeddings=OpenAIEmbeddings(),
+        num_clusters=5,
+        num_closest=1,
+        sorted=True,
     )
     pipeline = DocumentCompressorPipeline(transformers=[filter_ordered_by_retriever])
     compression_retriever = ContextualCompressionRetriever(
-    base_compressor=pipeline, base_retriever=retriever_chain
-)
+        base_compressor=pipeline, base_retriever=retriever_chain
+    )
     return compression_retriever.invoke(consulta)
-
 
 @tool
 def get_my_information_from_database(consulta: str, municipio: str) -> str:
     """Consultar información de los delitos desde la base de datos"""
     prompt = f"""
         Eres un asistente de datos, el usuario te va a solicitar una accion, lo unico que tienes que hacer es devolver la estructura de la informacion que necesita con base a las CATEGORIAS DE DELITOS y corregiendo el formato del municipio con base en FORMATOS DE MUNICIPIOS.
-        En caso de que el usuario solicite infromación de años anteriores, deberás devolver la información de la columna where = 'Año' de la base de datos.
         ###
         CATERGORIAS DE DELITOS:
         
@@ -1422,7 +1424,13 @@ def get_my_information_from_database(consulta: str, municipio: str) -> str:
         ###
         
         IMPORTANTE: 
-        - La columna llamada "Estadísticas (1)" representa delitos.
+        - Siempre que te consulten información sobre tasa por cada mil habitantes (tpcmh), debes utilizar la tabla tasa_de_delitos_por_cada_mil_habitantes.
+        - Si solo te consultan información sobre delitos en un municipio, debes utilizar la tabla delitos_mes_a_mes.
+        - Cuando te consulten información sobre estrategias o indicadores o acciones a problemáticas y/o delitos, debes utilizar la tabla problematicas_estrategias.
+        - En caso de que el usuario solicite información de años anteriores, deberás devolver la información de la columna 'Año' de la base de datos.
+        - La columna "PROBLEMÁTICA" hace referencia a delitos en la tablatasa_de_delitos_por_cada_mil_habitantes.
+        - La columna llamada "Estadísticas (1)" representa delitos en la tabla delitos_mes_a_mes.
+        
 
         Ejemplo 1:
         Usuario: Quiero saber cuales son los delitos mas recurrentes en Bogota, Mi Municipio Girardota (Ant)
@@ -1446,10 +1454,12 @@ def get_my_information_from_database(consulta: str, municipio: str) -> str:
     # return response
     return consultar_datos_por_municipio(query=response, municipio=municipio)
 
+
 # get_my_information_from_database(
 #     consulta="quiero saber los principales delitos en BOGOTA",
 #     municipio="Girardota (Ant)",
 # )
+
 
 # Build chain
 def Chain_with_tool(municipio):
@@ -1470,7 +1480,6 @@ def Chain_with_tool(municipio):
                     IMPORTANTE: 
                     - En caso de que no se especifique el año, se asumirá que se está hablando del año 2024.
                     - En caso de que no se especifique el municipio, se asumirá que se está hablando de {municipio}.
-                    - En caso de que pidan información sobre el año, deberás realizar la suma total para el año que se pide según el delito
                 """,
             ),
             ("placeholder", "{conversation_history}"),
@@ -1497,16 +1506,15 @@ def fip_model_with_tools(query, conversation, municipio):
 
     print(municipio)
     tool_agent = Chain_with_tool(municipio)
-    response = tool_agent.invoke(
-        { "chat_history": chat_history, "input": query }
-    )
+    response = tool_agent.invoke({"chat_history": chat_history, "input": query})
     return response["output"]
-
 
 municipio = "Bogotá, D.C. Cap."
 #query = "Cómo construir un piscc?"
 #query = "cuantos municipios existen en la base de datos?"
-query = "3 delitos más frecuentes en el municipio de Giraldota el año 2024"
+#query = "3 delitos más frecuentes en el municipio de Giraldota el año 2024"
+#query = "Cual es el objetivo de la estrategia Generación de conocimiento sobre el fenómeno del abigeato para el delito de Abigeato "
+query = "cual es la tasa por cada mil habitantes del delito extorsión en año 2014"
 conversation = [
         {
             "created_at": "2024-05-03 12:49:37.377881",
